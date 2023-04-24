@@ -8,15 +8,25 @@ type Data = {
 };
 
 export function Login() {
-  function handleLogin(data: Data) {
+  const [form] = Form.useForm();
+
+  async function handleLogin(data: Data) {
     const { email, password, rememeber } = data;
-    // TODO: auth request
-    const token = JSON.stringify({ email, rememeber });
+
+    const response = await fetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password, rememeber }),
+    });
+    const token = await response.json();
+    console.log(token);
     localStorage.setItem("auth", token);
+
+    form.resetFields();
   }
 
   return (
     <Form
+      form={form}
       style={{ minWidth: 300 }}
       initialValues={{ remember: true }}
       onFinish={handleLogin}
