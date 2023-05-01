@@ -1,14 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   LaptopOutlined,
   NotificationOutlined,
   UserOutlined,
   ClockCircleOutlined,
   AntDesignOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
+import type {
+  MenuProps,
+  RadioChangeEvent,
+  DatePickerProps,
+  UploadProps,
+} from "antd";
 import {
   Breadcrumb,
   Layout,
@@ -22,6 +28,14 @@ import {
   Button,
   Tooltip,
   Input,
+  Drawer,
+  Form,
+  Space,
+  Select,
+  Radio,
+  DatePicker,
+  Upload,
+  message,
   theme,
 } from "antd";
 import styles from "./page.module.css";
@@ -29,6 +43,8 @@ import styles from "./page.module.css";
 const { Header, Content, Sider } = Layout;
 
 const { Search } = Input;
+const { Option } = Select;
+const { Dragger } = Upload;
 
 const items1: MenuProps["items"] = [
   UserOutlined,
@@ -46,15 +62,223 @@ const items1: MenuProps["items"] = [
       const subKey = index * 4 + j + 1;
       return {
         key: subKey,
-        label: `Caso de Teste ${subKey}`,
+        label: `Suite ${subKey}`,
+        children: new Array(2).fill(null).map((_, j) => {
+          const subSubKey = index * 4 + j + 1;
+          return {
+            key: subSubKey,
+            label: `Caso de Teste ${subSubKey}`,
+          };
+        }),
       };
     }),
   };
 });
 
+const onChangeSeverity = (e: RadioChangeEvent) => {
+  console.log(`radio checked:${e.target.value}`);
+};
+
+const onChangePriority = (e: RadioChangeEvent) => {
+  console.log(`radio checked:${e.target.value}`);
+};
+
+const onChangeDeadline: DatePickerProps["onChange"] = (date, dateString) => {
+  console.log(date, dateString);
+};
+
+const props: UploadProps = {
+  name: "file",
+  multiple: true,
+  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  onChange(info) {
+    const { status } = info.file;
+    if (status !== "uploading") {
+      console.log(info.file, info.fileList);
+    }
+    if (status === "done") {
+      message.success(`${info.file.name} file uploaded successfully.`);
+    } else if (status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+  onDrop(e) {
+    console.log("Dropped files", e.dataTransfer.files);
+  },
+};
+
 export default function Home() {
+  const [open, setOpen] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const successCreate = () => {
+    messageApi.open({
+      type: "success",
+      content: "Caso de teste criado com sucesso",
+    });
+  };
+
+  const errorCreate = () => {
+    messageApi.open({
+      type: "error",
+      content: "Ocorreu algum erro na criação do caso de teste",
+    });
+  };
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    // if(success) {
+    //   successCreate();
+    // } else {
+    //   errorCreate();
+    // }
+
+    setOpen(false);
+  };
+
   return (
     <main>
+      {contextHolder}
+      {open ? (
+        <Drawer
+          title="Criar caso de teste"
+          onClose={onClose}
+          open={open}
+          width={480}
+          bodyStyle={{ paddingBottom: 80 }}
+        >
+          <Form layout="vertical" hideRequiredMark>
+            <Form.Item
+              name="title"
+              label="Título"
+              rules={[
+                { required: true, message: "Digite o título de caso de teste" },
+              ]}
+            >
+              <Input placeholder="Digite o título de caso de teste" />
+            </Form.Item>
+            <Form.Item
+              name="description"
+              label="Descrição"
+              rules={[
+                {
+                  required: true,
+                  message: "Digite a descrição do caso de teste",
+                },
+              ]}
+            >
+              <Input.TextArea
+                rows={4}
+                placeholder="Digite a descrição do caso de teste"
+              />
+            </Form.Item>
+            <Form.Item
+              name="type"
+              label="Tipo de teste"
+              rules={[{ required: true, message: "Selecione o tipo de teste" }]}
+            >
+              <Select placeholder="Selecione o tipo de teste">
+                <Option value="functional">Funcional</Option>
+                <Option value="smoke">Smoke</Option>
+                <Option value="regression">Regressão</Option>
+                <Option value="security">Segurança</Option>
+                <Option value="usability">Usabilidade</Option>
+                <Option value="performance">Performace</Option>
+                <Option value="acceptance">Aceitação</Option>
+                <Option value="compatibility">Compabilidade</Option>
+                <Option value="integration">Integração</Option>
+                <Option value="exploratory">Exploratório</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="deadline"
+              label="Deadline"
+              rules={[
+                {
+                  required: true,
+                  message: "Selecione a data limite para o teste",
+                },
+              ]}
+            >
+              <DatePicker onChange={onChangeDeadline} />
+            </Form.Item>
+            <Form.Item
+              name="assignees"
+              label="Tester"
+              rules={[
+                { required: true, message: "Selecione o tester responsável" },
+              ]}
+            >
+              <Select placeholder="Selecione o tester responsável">
+                <Option value="fred">Fred</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="severity"
+              label="Severidade"
+              rules={[
+                { required: false, message: "Selecione a severidade do teste" },
+              ]}
+            >
+              <Radio.Group
+                size="small"
+                onChange={onChangeSeverity}
+                defaultValue="minor"
+              >
+                <Radio.Button value="minor">Mínima</Radio.Button>
+                <Radio.Button value="trivial">Trivial</Radio.Button>
+                <Radio.Button value="normal">Normal</Radio.Button>
+                <Radio.Button value="major">Grave</Radio.Button>
+                <Radio.Button value="blocker">Bloqueador</Radio.Button>
+                <Radio.Button value="critical">Crítico</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item
+              name="priority"
+              label="Prioridade"
+              rules={[
+                { required: false, message: "Selecione a prioridade do teste" },
+              ]}
+            >
+              <Radio.Group onChange={onChangePriority} defaultValue="low">
+                <Radio.Button value="low">Baixa</Radio.Button>
+                <Radio.Button value="medium">Média</Radio.Button>
+                <Radio.Button value="high">Alta</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item
+              name="files"
+              label="Anexos"
+              rules={[{ required: false, message: "Anexos" }]}
+            >
+              <Dragger {...props}>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Se houver algum anexo ao caso clique ou arraste o arquivo para
+                  esta área
+                </p>
+                <p className="ant-upload-hint">
+                  Suporte para um upload único ou em massa. Apenas arquivos
+                  .png, .jpg e .jpeg
+                </p>
+              </Dragger>
+            </Form.Item>
+            <Space>
+              <Button onClick={onClose}>Cancelar</Button>
+              <Button onClick={onClose} type="primary">
+                Criar caso de teste
+              </Button>
+            </Space>
+          </Form>
+        </Drawer>
+      ) : (
+        <></>
+      )}
       <Layout>
         <Header className="header">
           <div className="logo" />
@@ -121,7 +345,9 @@ export default function Home() {
               />
               <div className={styles.contentContainerHeader}>
                 <h3>50 casos de teste disponíveis</h3>
-                <Button type="primary">Criar caso de teste</Button>
+                <Button onClick={showDrawer} type="primary">
+                  Criar caso de teste
+                </Button>
               </div>
               <Row gutter={16}>
                 <Col span={8}>
