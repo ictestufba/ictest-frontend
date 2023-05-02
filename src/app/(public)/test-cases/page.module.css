@@ -3,6 +3,10 @@
   background: white;
 }
 
+.modal p {
+  margin: 0;
+}
+
 .successTestCard p,
 .failTestCard p,
 .onProgressTestCard p,
