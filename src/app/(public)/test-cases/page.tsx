@@ -35,6 +35,8 @@ import {
   Radio,
   DatePicker,
   Upload,
+  Dropdown,
+  Modal,
   message,
   theme,
 } from "antd";
@@ -47,9 +49,9 @@ const { Option } = Select;
 const { Dragger } = Upload;
 
 const items1: MenuProps["items"] = [
-  UserOutlined,
   LaptopOutlined,
-  NotificationOutlined,
+  LaptopOutlined,
+  LaptopOutlined,
 ].map((icon, index) => {
   const key = String(index + 1);
 
@@ -57,14 +59,15 @@ const items1: MenuProps["items"] = [
     key: `sub${key}`,
     icon: React.createElement(icon),
     label: `Projeto ${key}`,
-
-    children: new Array(4).fill(null).map((_, j) => {
+    children: new Array(3).fill(null).map((_, j) => {
       const subKey = index * 4 + j + 1;
+
       return {
         key: subKey,
         label: `Suite ${subKey}`,
         children: new Array(2).fill(null).map((_, j) => {
           const subSubKey = index * 4 + j + 1;
+
           return {
             key: subSubKey,
             label: `Caso de Teste ${subSubKey}`,
@@ -108,7 +111,8 @@ const props: UploadProps = {
 };
 
 export default function Home() {
-  const [open, setOpen] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   const successCreate = () => {
@@ -125,28 +129,68 @@ export default function Home() {
     });
   };
 
-  const showDrawer = () => {
-    setOpen(true);
+  const successEdit = () => {
+    messageApi.open({
+      type: "success",
+      content: "Caso de teste editado com sucesso",
+    });
   };
 
-  const onClose = () => {
+  const errorEdit = () => {
+    messageApi.open({
+      type: "error",
+      content: "Ocorreu algum erro na edição do caso de teste",
+    });
+  };
+
+  const showCreateDrawer = () => {
+    setOpenCreate(true);
+  };
+
+  const showEditModal = () => {
+    setOpenEdit(true);
+  };
+
+  const onCloseCreate = () => {
     // if(success) {
     //   successCreate();
     // } else {
     //   errorCreate();
     // }
 
-    setOpen(false);
+    setOpenCreate(false);
+  };
+
+  const warningDeleteTestCase = () => {
+    Modal.warning({
+      title: "Tem certeza que deseja deletar o caso de teste?",
+      content: "Não será possível recuperar este caso de teste.",
+    });
+  };
+
+  const items = [
+    {
+      key: "1",
+      label: "Editar",
+    },
+    {
+      key: "2",
+      label: "Excluir",
+    },
+  ];
+
+  const onMenuClick: MenuProps["onClick"] = (e) => {
+    warningDeleteTestCase();
   };
 
   return (
     <main>
       {contextHolder}
-      {open ? (
+      {openCreate ? (
         <Drawer
           title="Criar caso de teste"
-          onClose={onClose}
-          open={open}
+          onClose={onCloseCreate}
+          open={openCreate}
           width={480}
           bodyStyle={{ paddingBottom: 80 }}
         >
@@ -269,13 +313,95 @@ export default function Home() {
               </Dragger>
             </Form.Item>
             <Space>
-              <Button onClick={onClose}>Cancelar</Button>
-              <Button onClick={onClose} type="primary">
+              <Button onClick={onCloseCreate}>Cancelar</Button>
+              <Button onClick={onCloseCreate} type="primary">
                 Criar caso de teste
               </Button>
             </Space>
           </Form>
         </Drawer>
+      ) : (
+        <></>
+      )}
+      {openEdit ? (
+        <Modal
+          centered
+          open={openEdit}
+          onOk={() => setOpenEdit(false)}
+          okText="Salvar alterações"
+          onCancel={() => setOpenEdit(false)}
+          width={1000}
+          className={styles.modal}
+        >
+          <div className={styles.testContent}>
+            <div className={styles.statusContainer}>
+              <span className={styles.successStatus}></span>
+              <p>Sucesso</p>
+            </div>
+
+            <h3>Título do Caso</h3>
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry.{" "}
+            </p>
+            <div className={styles.tagsContainer}>
+              <Tag color="default">SPRINT 1</Tag>
+              <Tag color="#FF5500">TESTE DE SEGURANÇA</Tag>
+              <Tag color="#FF5500">CRÍTICO</Tag>
+              <Tag icon={<ClockCircleOutlined />} color="success">
+                24 ABR
+              </Tag>
+            </div>
+            <div className={styles.footerCard}>
+              <p className={styles.secondaryText}>Criado por Fred Durão</p>
+              <div className={styles.assignContainer}>
+                <p className={styles.secondaryText}>
+                  Criado 02/04/2023 por Fred Durão | Editado 02/04/2023 às 22:41
+                </p>
+                <div className={styles.assignContainer}>
+                  <p className={styles.secondaryText}>Atribuído a </p>
+                  <Avatar size="small" icon={<UserOutlined />} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <Form layout="vertical">
+            <Form.Item
+              name="description"
+              label="Descrição"
+              rules={[
+                {
+                  required: true,
+                  message: "Digite a descrição do caso de teste",
+                },
+              ]}
+            >
+              <Input.TextArea
+                rows={4}
+                placeholder="Digite a descrição do caso de teste"
+              />
+            </Form.Item>
+            <Form.Item
+              name="files"
+              label="Anexos"
+              rules={[{ required: false, message: "Anexos" }]}
+            >
+              <Dragger {...props}>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Se houver algum anexo ao caso clique ou arraste o arquivo para
+                  esta área
+                </p>
+                <p className="ant-upload-hint">
+                  Suporte para um upload único ou em massa. Apenas arquivos
+                  .png, .jpg e .jpeg
+                </p>
+              </Dragger>
+            </Form.Item>
+          </Form>
+        </Modal>
       ) : (
         <></>
       )}
@@ -287,8 +413,8 @@ export default function Home() {
           <Sider width={200} style={{ background: "#FFFFFF" }}>
             <Menu
               mode="inline"
-              defaultSelectedKeys={["1"]}
-              defaultOpenKeys={["sub1"]}
+              // defaultSelectedKeys={["1"]}
+              // defaultOpenKeys={["sub1"]}
               style={{ height: "100%", borderRight: 0 }}
               items={items1}
             />
@@ -345,18 +471,25 @@ export default function Home() {
               />
               <div className={styles.contentContainerHeader}>
                 <h3>50 casos de teste disponíveis</h3>
-                <Button onClick={showDrawer} type="primary">
+                <Button onClick={showCreateDrawer} type="primary">
                   Criar caso de teste
                 </Button>
               </div>
               <Row gutter={16}>
                 <Col span={8}>
-                  <Card className={styles.successTestCard} bordered={false}>
+                  <Card
+                    onClick={showEditModal}
+                    className={styles.successTestCard}
+                    bordered={false}
+                  >
                     <div className={styles.testContent}>
                       <div className={styles.statusContainer}>
                         <span className={styles.successStatus}></span>
                         <p>Sucesso</p>
                       </div>
+                      {/* <Dropdown.Button
+                        menu={{ items, onClick: onMenuClick }}
+                      ></Dropdown.Button> */}
                       <h3>Título do Caso</h3>
                       <p>
                         Lorem Ipsum is simply dummy text of the printing and
