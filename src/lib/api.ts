@@ -1,16 +1,18 @@
 import axios from "axios";
 import { getToken, removeToken, setToken } from "./auth";
-
-type Session = {
-  token: string;
-};
+import { Session } from "@/types/models";
 
 const refreshTokenFn = async () => {
   const currentToken = getToken();
 
-  if (!currentToken) return;
+  if (!currentToken) {
+    window.location.href = "/login";
+    return;
+  }
 
   try {
+    console.log("try");
+
     const response = await api.post<Session>("/user/refresh", {
       refreshToken: currentToken,
     });
@@ -42,15 +44,22 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-axios.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const config = error?.config;
 
-    if (error?.response?.status === 401 && !config?.sent) {
-      config.sent = true;
+    console.log({ error, status: error?.response?.status });
+
+    if (error?.response?.status === 401) {
+      // config.sent = true;
+      // config.sent = false;
+
+      console.log("a");
 
       const token = await refreshTokenFn();
+
+      console.log({ token });
 
       if (token) {
         config.headers = {
