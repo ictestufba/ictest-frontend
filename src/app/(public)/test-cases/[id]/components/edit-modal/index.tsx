@@ -62,13 +62,18 @@ export function EditModal(props: EditModalProps) {
     return null;
   }
 
-  function handleTestCaseEdit(payload: any) {
-    api.patch(`/test-cases/${testCase.id}/update`, {
+  async function handleTestCaseEdit(payload: any) {
+    await api.patch(`/test-cases/${testCase.id}/update`, {
       data: {
         ...testCase,
         ...payload,
       },
     });
+    onOk?.();
+  }
+
+  async function handleTestCaseDelete() {
+    await api.delete(`/test-cases/${testCase.id}`);
     onOk?.();
   }
 
@@ -89,8 +94,8 @@ export function EditModal(props: EditModalProps) {
         <div className={styles.statusContainer}>
           <span className={styles.successStatus}></span>
           <p>{renderStatusLabel()}</p>
-          <Button>
-            <DeleteFilled />{" "}
+          <Button danger onClick={handleTestCaseDelete}>
+            <DeleteFilled />
           </Button>
         </div>
 

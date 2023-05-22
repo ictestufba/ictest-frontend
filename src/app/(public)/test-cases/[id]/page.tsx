@@ -234,7 +234,10 @@ export default function Page({
       {openCreate ? (
         <CreateModal
           projectId={projectId}
-          onSubmit={() => mutate()}
+          onSubmit={() => {
+            onCloseCreate();
+            mutate();
+          }}
           onClose={onCloseCreate}
           open={openCreate}
         />
