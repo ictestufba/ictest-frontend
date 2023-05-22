@@ -8,6 +8,7 @@ import {
   ClockCircleOutlined,
   AntDesignOutlined,
   InboxOutlined,
+  DeleteFilled,
 } from "@ant-design/icons";
 import type {
   MenuProps,
@@ -41,7 +42,8 @@ import {
   theme,
 } from "antd";
 import styles from "./page.module.css";
-import { NavBar } from "./components";
+import { CreateProjectModal, NavBar } from "./components";
+import { api } from "@/lib/api";
 
 const { Header, Content, Sider } = Layout;
 
@@ -156,11 +158,19 @@ export default function Home() {
 
   return (
     <div>
-      <h2>IC Testes</h2>
+      {openCreate && (
+        <CreateProjectModal
+          open={openCreate}
+          onClose={onCloseCreate}
+          onSubmit={onCloseCreate}
+        />
+      )}
+      <h2>IC Testes </h2>
       <p>Bem-vindo(a) a plataforma</p>
       <div className={styles.contentContainerHeader}>
         <p className={styles.secondaryText}>
-          Selecione o projeto na barra lateral para iniciar
+          Selecione o projeto na barra lateral para iniciar ou{" "}
+          <Button onClick={showCreateDrawer}>Crie um projeto</Button>
         </p>
       </div>
     </div>

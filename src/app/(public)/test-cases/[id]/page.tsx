@@ -9,6 +9,7 @@ import {
   ClockCircleOutlined,
   AntDesignOutlined,
   InboxOutlined,
+  DeleteFilled,
 } from "@ant-design/icons";
 import {
   MenuProps,
@@ -47,6 +48,7 @@ import { Project, TestCase } from "@/types/models";
 import { api } from "@/lib/api";
 import { CreateModal, EditModal, TestCaseCard } from "./components";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const { Header, Content, Sider } = Layout;
 
@@ -95,6 +97,7 @@ export default function Page({
 }) {
   const projectId = params.id;
 
+  const router = useRouter();
   const [openCreate, setOpenCreate] = useState(false);
   const [form] = Form.useForm();
   const [openEdit, setOpenEdit] = useState(false);
@@ -224,8 +227,9 @@ export default function Page({
     (testCase) => testCase.id === selectedTestCaseId
   );
 
-  function handleCreateTestCase(payload: any) {
-    console.log({ payload });
+  async function handleDeleteProject() {
+    await api.delete(`/projects/${projectId}`);
+    router.replace("/test-cases");
   }
 
   return (
@@ -257,7 +261,12 @@ export default function Page({
       ) : (
         <></>
       )}
-      <h2>{project?.name}</h2>
+      <h2>
+        {project?.name}{" "}
+        <Button danger onClick={handleDeleteProject}>
+          <DeleteFilled />
+        </Button>
+      </h2>
       <p>{project?.description}</p>
       <div className={styles.contentContainerHeader}>
         <p className={styles.secondaryText}>Criado em {renderCreatedAt()}</p>
