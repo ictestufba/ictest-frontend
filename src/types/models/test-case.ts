@@ -2,7 +2,8 @@ export type TestCase = {
   project_id: string;
   id: string;
   title: string;
-  status: "actual" | "draft" | "deprecated";
+  // status: "actual" | "draft" | "deprecated";
+  status?: "error" | "success" | "in_progress" | "open";
   description?: string;
   severity:
     | "not_set"
