@@ -13,8 +13,11 @@ export function Register() {
   async function handleRegister(data: Data) {
     const { email, password, name } = data;
 
-    await fetch("/api/register", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ email, password, name }),
     });
 
