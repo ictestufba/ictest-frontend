@@ -1,18 +1,50 @@
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
 
+type Data = {
+  email: string;
+  password: string;
+  name: string;
+};
+
 export function Register() {
+  const [form] = Form.useForm();
+
+  async function handleRegister(data: Data) {
+    const { email, password, name } = data;
+
+    await fetch("/api/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password, name }),
+    });
+
+    form.resetFields();
+  }
+
   return (
     <Form
+      form={form}
       style={{ minWidth: 300 }}
       initialValues={{ remember: true }}
-      onFinish={console.warn}
+      onFinish={handleRegister}
       onFinishFailed={console.error}
       autoComplete="off"
     >
       <Form.Item
+        name="name"
+        rules={[{ required: true, message: "Informe seu nome" }]}
+      >
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="Nome: IC Test"
+          style={{
+            borderRadius: 0,
+          }}
+        />
+      </Form.Item>
+      <Form.Item
         name="email"
-        rules={[{ required: true, message: "Please input your username!" }]}
+        rules={[{ required: true, message: "Informe seu e-mail" }]}
       >
         <Input
           prefix={<UserOutlined className="site-form-item-icon" />}
@@ -25,7 +57,7 @@ export function Register() {
 
       <Form.Item
         name="password"
-        rules={[{ required: true, message: "Please input your password!" }]}
+        rules={[{ required: true, message: "Informe sua senha" }]}
       >
         <Input.Password
           prefix={<LockOutlined className="site-form-item-icon" />}
@@ -34,14 +66,6 @@ export function Register() {
             borderRadius: 0,
           }}
         />
-      </Form.Item>
-
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{ span: 16 }}
-      >
-        <Checkbox>Me Lembrar</Checkbox>
       </Form.Item>
 
       <Form.Item wrapperCol={{ span: 16 }}>
@@ -53,7 +77,7 @@ export function Register() {
             padding: `4px 28px`,
           }}
         >
-          Entrar
+          Cadastrar-se
         </Button>
       </Form.Item>
     </Form>
