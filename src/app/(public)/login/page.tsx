@@ -4,8 +4,10 @@ import { FileSearchOutlined } from "@ant-design/icons";
 import styles from "./page.module.css";
 
 import { Row, Space, Tabs, Typography, TabsProps } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Login, Register } from "./components";
+import { useRouter } from "next/navigation";
+import { isLoggedIn } from "@/lib/auth";
 
 enum TabOptions {
   LOGIN = "LOGIN",
@@ -13,12 +15,22 @@ enum TabOptions {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(TabOptions.LOGIN);
+
+  useEffect(() => {
+    const loggedIn = isLoggedIn();
+
+    if (loggedIn) router.push("/test-cases");
+  }, [router]);
+
+  const onLoginSuccess = () => router.push("/test-cases");
+
   const tabs: TabsProps["items"] = [
     {
       key: TabOptions.LOGIN,
       label: `Login`,
-      children: <Login />,
+      children: <Login onSuccess={onLoginSuccess} />,
     },
     {
       key: TabOptions.REGISTER,

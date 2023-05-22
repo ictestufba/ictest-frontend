@@ -1,3 +1,5 @@
+import { api } from "@/lib/api";
+import { setToken } from "@/lib/auth";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
 
@@ -7,21 +9,30 @@ type Data = {
   rememeber?: boolean;
 };
 
-export function Login() {
+type Props = {
+  onSuccess: () => void;
+};
+
+export function Login({ onSuccess }: Props) {
   const [form] = Form.useForm();
 
   async function handleLogin(data: Data) {
     const { email, password, rememeber } = data;
 
-    const response = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password, rememeber }),
-    });
-    const token = await response.json();
-    console.log(token);
-    localStorage.setItem("auth", token);
+    const payload = {
+      email,
+      password,
+    };
 
+    const response = await api.post<{ token: string }>(
+      "/sessions",
+      JSON.stringify(payload)
+    );
+    const { token } = response.data;
+    setToken(token);
+    console.log(token);
     form.resetFields();
+    onSuccess();
   }
 
   return (
