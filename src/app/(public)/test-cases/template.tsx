@@ -49,39 +49,9 @@ const { Search } = Input;
 const { Option } = Select;
 const { Dragger } = Upload;
 
-const onChangeSeverity = (e: RadioChangeEvent) => {
-  console.log(`radio checked:${e.target.value}`);
-};
-
-const onChangePriority = (e: RadioChangeEvent) => {
-  console.log(`radio checked:${e.target.value}`);
-};
-
-const onChangeDeadline: DatePickerProps["onChange"] = (date, dateString) => {
-  console.log(date, dateString);
-};
-
-const props: UploadProps = {
-  name: "file",
-  multiple: true,
-  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (status === "done") {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log("Dropped files", e.dataTransfer.files);
-  },
-};
-
-export default function Home() {
+export default function DashboardTemplate({
+  children,
+}: React.PropsWithChildren) {
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -139,30 +109,30 @@ export default function Home() {
     });
   };
 
-  const items = [
-    {
-      key: "1",
-      label: "Editar",
-    },
-    {
-      key: "2",
-      label: "Excluir",
-    },
-  ];
-
-  const onMenuClick: MenuProps["onClick"] = (e) => {
-    warningDeleteTestCase();
-  };
-
   return (
-    <div>
-      <h2>IC Testes</h2>
-      <p>Bem-vindo(a) a plataforma</p>
-      <div className={styles.contentContainerHeader}>
-        <p className={styles.secondaryText}>
-          Selecione o projeto na barra lateral para iniciar
-        </p>
-      </div>
-    </div>
+    <main>
+      {contextHolder}
+
+      <Layout>
+        <Header className="header">
+          <div className="logo" />
+        </Header>
+        <Layout>
+          <Sider width={200} style={{ background: "#FFFFFF" }}>
+            <NavBar />
+          </Sider>
+          <Layout style={{ padding: "0 24px 24px" }}>
+            <div className={styles.header}>
+              <Breadcrumb style={{ margin: "16px 0" }}>
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>List</Breadcrumb.Item>
+                <Breadcrumb.Item>App</Breadcrumb.Item>
+              </Breadcrumb>
+              {children}
+            </div>
+          </Layout>
+        </Layout>
+      </Layout>
+    </main>
   );
 }

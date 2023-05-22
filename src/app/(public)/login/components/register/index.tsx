@@ -1,3 +1,4 @@
+import { api } from "@/lib/api";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
 
@@ -13,10 +14,9 @@ export function Register() {
   async function handleRegister(data: Data) {
     const { email, password, name } = data;
 
-    await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify({ email, password, name }),
-    });
+    const payload = { email, password, name };
+
+    await api.post("/users", JSON.stringify(payload));
 
     form.resetFields();
   }

@@ -1,7 +1,6 @@
 .header {
   padding: 16px 24px;
   background: white;
-  min-height: 600px;
 }
 
 .modal p {
@@ -22,7 +21,6 @@
 }
 
 .contentContainerHeader {
-  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;

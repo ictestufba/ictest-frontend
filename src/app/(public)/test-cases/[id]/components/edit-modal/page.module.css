@@ -1,7 +1,6 @@
 .header {
   padding: 16px 24px;
   background: white;
-  min-height: 600px;
 }
 
 .modal p {
@@ -22,10 +21,15 @@
 }
 
 .contentContainerHeader {
-  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
 
 .successTestCard {
@@ -33,10 +37,7 @@
   cursor: pointer;
 }
 
-.successStatus {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.successTestCard .status {
   background: #52c41a;
 }
 
@@ -45,10 +46,7 @@
   cursor: pointer;
 }
 
-.failStatus {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.failTestCard .status {
   background: #ff4d4f;
 }
 
@@ -57,10 +55,7 @@
   cursor: pointer;
 }
 
-.onProgressStatus {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.onProgressTestCard .status {
   background: #ffb018;
 }
 
@@ -68,10 +63,7 @@
   background-color: rgba(201, 201, 201, 0.2);
 }
 
-.openStatus {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+.openTestCard .status {
   background: #c9c9c9;
 }
 
