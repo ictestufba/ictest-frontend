@@ -1,15 +1,29 @@
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
+import { createUser } from "@/services/api";
 
 export function Register() {
   return (
     <Form
       style={{ minWidth: 300 }}
       initialValues={{ remember: true }}
-      onFinish={console.warn}
+      onFinish={createUser}
       onFinishFailed={console.error}
       autoComplete="off"
     >
+      <Form.Item
+        name="name"
+        rules={[{ required: true, message: "Please input your name!" }]}
+      >
+        <Input
+          prefix={<UserOutlined className="site-form-item-icon" />}
+          placeholder="Name: John Doe"
+          style={{
+            borderRadius: 0,
+          }}
+        />
+      </Form.Item>
+
       <Form.Item
         name="email"
         rules={[{ required: true, message: "Please input your username!" }]}
@@ -41,7 +55,7 @@ export function Register() {
         valuePropName="checked"
         wrapperCol={{ span: 16 }}
       >
-        <Checkbox>Me Lembrar</Checkbox>
+        <Checkbox>Lembrar-me</Checkbox>
       </Form.Item>
 
       <Form.Item wrapperCol={{ span: 16 }}>
@@ -53,7 +67,7 @@ export function Register() {
             padding: `4px 28px`,
           }}
         >
-          Entrar
+          Criar usuário
         </Button>
       </Form.Item>
     </Form>
