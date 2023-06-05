@@ -4,6 +4,23 @@
   min-height: 600px;
 }
 
+.headerContentContainer {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  flex-grow: 1;
+  color: white;
+  align-items: center;
+}
+
+.logoutContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .modal p {
   margin: 0;
 }

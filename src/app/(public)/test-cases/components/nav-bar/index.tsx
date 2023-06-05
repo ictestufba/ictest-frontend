@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
 import { Project, TestCase } from "@/types/models";
-import { LaptopOutlined } from "@ant-design/icons";
+import { AuditOutlined, LaptopOutlined } from "@ant-design/icons";
 import { Menu, MenuProps, Spin } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -58,7 +58,7 @@ export function NavBar() {
 
       const children = projectTestCases.map((testCase) => ({
         key: testCase.id,
-        icon: React.createElement(LaptopOutlined),
+        icon: React.createElement(AuditOutlined),
         label: testCase.title,
       }));
 
