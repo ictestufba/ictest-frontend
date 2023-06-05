@@ -9,6 +9,7 @@ import {
   Select,
   Space,
   Upload,
+  message,
 } from "antd";
 import React from "react";
 import { useSWRConfig } from "swr";
@@ -21,6 +22,7 @@ const { Dragger } = Upload;
 
 type CreateModalProps = {
   onClose: () => void;
+  onError?: (error: unknown) => void;
   onSubmit?: () => void;
   open: boolean;
   projectId: string;
@@ -35,19 +37,35 @@ type Payload = {
 };
 
 export function CreateModal(props: CreateModalProps) {
-  const { onClose, open, projectId, onSubmit } = props;
+  const { onClose, open, projectId, onSubmit, onError } = props;
   const [form] = Form.useForm();
-  const {} = useSWRConfig();
+  const [messageApi, contextHolder] = message.useMessage();
 
   async function handleCreateTestCase(payload: Payload) {
-    payload.priority = payload.priority ?? "low";
-    payload.severity = payload.severity ?? "minor";
-    await api.post(`/test-cases`, {
-      project_id: projectId,
-      is_flaky: false,
-      ...payload,
-    });
-    onSubmit?.();
+    try {
+      const hasSomeEmptyValue = [
+        payload.title,
+        payload.description,
+        payload.type,
+      ]
+        .map((s) => s.trim())
+        .some((s) => !s);
+
+      if (hasSomeEmptyValue)
+        return messageApi.warning("Preencha os campos necessários");
+
+      payload.priority = payload.priority ?? "low";
+      payload.severity = payload.severity ?? "minor";
+      await api.post(`/test-cases`, {
+        project_id: projectId,
+        is_flaky: false,
+        ...payload,
+      });
+      onSubmit?.();
+    } catch (error) {
+      console.error(error);
+      onError?.(error);
+    }
   }
 
   return (
@@ -58,6 +76,7 @@ export function CreateModal(props: CreateModalProps) {
       width={480}
       bodyStyle={{ paddingBottom: 80 }}
     >
+      {contextHolder}
       <Form
         form={form}
         onFinish={handleCreateTestCase}
@@ -152,7 +171,7 @@ export function CreateModal(props: CreateModalProps) {
             { required: false, message: "Selecione a prioridade do teste" },
           ]}
         >
-          <Radio.Group defaultValue="low">
+          <Radio.Group size="small" defaultValue="low">
             <Radio.Button value="low">Baixa</Radio.Button>
             <Radio.Button value="medium">Média</Radio.Button>
             <Radio.Button value="high">Alta</Radio.Button>

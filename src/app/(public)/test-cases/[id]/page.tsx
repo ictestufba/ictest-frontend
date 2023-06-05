@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import useSwr from "swr";
+import React, { useMemo, useState } from "react";
+import useSwr, { useSWRConfig } from "swr";
 import {
   LaptopOutlined,
   NotificationOutlined,
@@ -99,6 +99,7 @@ export default function Page({
 
   const router = useRouter();
   const [openCreate, setOpenCreate] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>();
   const [form] = Form.useForm();
   const [openEdit, setOpenEdit] = useState(false);
   const [selectedTestCaseId, setSelectedTestCaseId] = useState<string>();
@@ -172,6 +173,7 @@ export default function Page({
     warningDeleteTestCase();
   };
 
+  const { mutate: globalMutate } = useSWRConfig();
   const { data: project, isLoading: projectIsLoading } = useSwr<Project>(
     `/project/${projectId}`,
     async () => {
@@ -195,6 +197,12 @@ export default function Page({
     return response.data.testCases;
   });
 
+  const filterdTestCases = useMemo(() => {
+    if (!searchTerm) return testCases;
+
+    return testCases?.filter((testCase) => testCase.title.includes(searchTerm));
+  }, [searchTerm, testCases]);
+
   if (projectIsLoading) return <Spin />;
 
   //   if(testCasesIsLoading)
@@ -207,7 +215,7 @@ export default function Page({
   function renderCreatedAt() {
     if (!project?.created_at) return null;
 
-    return format(new Date(project.created_at), "dd/MM/yyyy");
+    return format(new Date(project.created_at), "dd/MM/yyyy HH:mm");
   }
 
   function renderTestCases() {
@@ -216,7 +224,10 @@ export default function Page({
     if (!testCases.length)
       return <Col span={12}>Nenhum caso de teste cadastrado ainda</Col>;
 
-    return testCases.map((testCase) => (
+    if (!filterdTestCases?.length)
+      return <Col span={12}>Nenhum caso de teste encontrado</Col>;
+
+    return filterdTestCases.map((testCase) => (
       <Col span={8} key={testCase.id}>
         <TestCaseCard onClick={handleTestCaseCardClick} testCase={testCase} />
       </Col>
@@ -241,7 +252,10 @@ export default function Page({
           onSubmit={() => {
             onCloseCreate();
             mutate();
+            globalMutate("/projects");
+            successCreate();
           }}
+          onError={errorCreate}
           onClose={onCloseCreate}
           open={openCreate}
         />
@@ -251,9 +265,11 @@ export default function Page({
       {openEdit && selectedTestCase ? (
         <EditModal
           onCancel={() => setOpenEdit(false)}
+          onError={errorEdit}
           onOk={() => {
             setOpenEdit(false);
             mutate();
+            successEdit();
           }}
           open={openEdit}
           testCase={selectedTestCase}
@@ -300,10 +316,13 @@ export default function Page({
           gap: 16,
         }}
       >
-        <Search
-          placeholder="Digite o título do caso de teste que deseja"
-          enterButton
-        />
+        {testCases && testCases.length > 0 && (
+          <Search
+            placeholder="Digite o título do caso de teste que deseja"
+            enterButton
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        )}
         <div className={styles.contentContainerHeader}>
           <h3>{testCases?.length ?? "-"} casos de teste disponíveis</h3>
           <Button onClick={showCreateDrawer} type="primary">

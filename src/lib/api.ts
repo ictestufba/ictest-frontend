@@ -27,12 +27,13 @@ const refreshTokenFn = async () => {
 
     return token;
   } catch (error) {
+    console.error(error);
     removeToken();
   }
 };
 
 const api = axios.create({
-  baseURL: "https://ictest-backend.fly.dev/",
+  baseURL: "https://ictest-backend-production.up.railway.app/",
   headers: {
     "content-type": "application/json",
   },

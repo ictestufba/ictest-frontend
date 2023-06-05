@@ -30,7 +30,7 @@ export function TestCaseCard(props: TestCaseCardProps) {
   }
 
   const date = new Date(testCase.created_at);
-  const formattedDate = format(date, "dd/MM/yyyy");
+  const formattedDate = format(date, "dd/MM/yyyy HH:mm");
 
   const statusStyle = useMemo(() => {
     //     .successTestCard p,

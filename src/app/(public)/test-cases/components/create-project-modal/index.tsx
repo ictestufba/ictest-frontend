@@ -10,6 +10,7 @@ import {
   Select,
   Space,
   Upload,
+  message,
 } from "antd";
 import React from "react";
 import { useSWRConfig } from "swr";
@@ -33,14 +34,23 @@ type Payload = {
 
 export function CreateProjectModal(props: CreateProjectModalProps) {
   const { onClose, open, onSubmit } = props;
+
   const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   const { mutate } = useSWRConfig();
 
   async function handleProjectCase(payload: Payload) {
     payload.member_access = payload.member_access ?? "add_all";
     payload.visibility = payload.visibility ?? "public";
+
+    const hasSomeEmptyValue = [payload.code, payload.name]
+      .map((s) => s.trim())
+      .some((s) => !s);
+
+    if (hasSomeEmptyValue)
+      return messageApi.warning("Preencha os campos necessários");
+
     const response = await api.post<{ project: Project }>(`/projects`, payload);
-    console.log({ p: response.data.project });
 
     mutate<Project[]>("projects", (data = []) => [
       ...data,
@@ -57,6 +67,7 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
       width={480}
       bodyStyle={{ paddingBottom: 80 }}
     >
+      {contextHolder}
       <Form
         form={form}
         onFinish={handleProjectCase}
@@ -88,7 +99,10 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
         <Form.Item
           name="code"
           label="Código"
-          rules={[{ required: true, message: "Digite o código do projeto" }]}
+          rules={[
+            { required: true, message: "Digite o código do projeto" },
+            {},
+          ]}
         >
           <Input placeholder="Digite o código do projeto" />
         </Form.Item>

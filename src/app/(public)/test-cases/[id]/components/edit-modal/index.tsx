@@ -28,13 +28,14 @@ const { Option } = Select;
 
 type EditModalProps = {
   testCase: TestCase;
+  onError?: (error: unknown) => void;
   onOk: () => void;
   onCancel: () => void;
   open: boolean;
 };
 
 export function EditModal(props: EditModalProps) {
-  const { testCase, open, onOk, onCancel } = props;
+  const { testCase, open, onOk, onCancel, onError } = props;
 
   function renderStatusLabel() {
     if (testCase.status === "error") return "Falha";
@@ -45,7 +46,7 @@ export function EditModal(props: EditModalProps) {
   }
 
   const date = new Date(testCase.created_at);
-  const formattedDate = format(date, "dd/MM/yyyy");
+  const formattedDate = format(date, "dd/MM/yyyy HH:mm");
 
   const [form] = Form.useForm();
 
@@ -63,13 +64,18 @@ export function EditModal(props: EditModalProps) {
   }
 
   async function handleTestCaseEdit(payload: any) {
-    await api.patch(`/test-cases/${testCase.id}/update`, {
-      data: {
-        ...testCase,
-        ...payload,
-      },
-    });
-    onOk?.();
+    try {
+      await api.patch(`/test-cases/${testCase.id}/update`, {
+        data: {
+          ...testCase,
+          ...payload,
+        },
+      });
+      onOk?.();
+    } catch (error) {
+      console.error(error);
+      onError?.(error);
+    }
   }
 
   async function handleTestCaseDelete() {

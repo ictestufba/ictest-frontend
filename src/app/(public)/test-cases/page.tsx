@@ -10,11 +10,12 @@ import {
   InboxOutlined,
   DeleteFilled,
 } from "@ant-design/icons";
-import type {
+import {
   MenuProps,
   RadioChangeEvent,
   DatePickerProps,
   UploadProps,
+  Anchor,
 } from "antd";
 import {
   Breadcrumb,
@@ -170,7 +171,9 @@ export default function Home() {
       <div className={styles.contentContainerHeader}>
         <p className={styles.secondaryText}>
           Selecione o projeto na barra lateral para iniciar ou{" "}
-          <Button onClick={showCreateDrawer}>Crie um projeto</Button>
+          <a href="#" onClick={showCreateDrawer}>
+            Crie um projeto
+          </a>
         </p>
       </div>
     </div>

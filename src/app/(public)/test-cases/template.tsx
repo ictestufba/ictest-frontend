@@ -8,12 +8,14 @@ import {
   ClockCircleOutlined,
   AntDesignOutlined,
   InboxOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
-import type {
+import {
   MenuProps,
   RadioChangeEvent,
   DatePickerProps,
   UploadProps,
+  Anchor,
 } from "antd";
 import {
   Breadcrumb,
@@ -42,6 +44,9 @@ import {
 } from "antd";
 import styles from "./page.module.css";
 import { NavBar } from "./components";
+import { removeToken } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const { Header, Content, Sider } = Layout;
 
@@ -52,6 +57,7 @@ const { Dragger } = Upload;
 export default function DashboardTemplate({
   children,
 }: React.PropsWithChildren) {
+  const router = useRouter();
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -115,7 +121,23 @@ export default function DashboardTemplate({
 
       <Layout>
         <Header className="header">
-          <div className="logo" />
+          <div className={styles.headerContentContainer}>
+            <div className={styles.logo}>
+              <Link href="/test-cases">IC Testes</Link>
+            </div>
+
+            <div className={styles.logoutContainer}>
+              <Button
+                onClick={() => {
+                  removeToken();
+                  router.push("/login");
+                }}
+              >
+                Logout
+                <LogoutOutlined />
+              </Button>
+            </div>
+          </div>
         </Header>
         <Layout>
           <Sider width={200} style={{ background: "#FFFFFF" }}>
@@ -123,11 +145,11 @@ export default function DashboardTemplate({
           </Sider>
           <Layout style={{ padding: "0 24px 24px" }}>
             <div className={styles.header}>
-              <Breadcrumb style={{ margin: "16px 0" }}>
+              {/* <Breadcrumb style={{ margin: "16px 0" }}>
                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>List</Breadcrumb.Item>
                 <Breadcrumb.Item>App</Breadcrumb.Item>
-              </Breadcrumb>
+              </Breadcrumb> */}
               {children}
             </div>
           </Layout>
