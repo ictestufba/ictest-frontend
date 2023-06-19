@@ -3,6 +3,17 @@
   background: white;
 }
 
+.container {
+  padding: 8px 0;
+}
+
+.avatarContainer {
+  padding-top: 8px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
 .modal p {
   margin: 0;
 }

@@ -3,6 +3,8 @@ export type TestCase = {
   id: string;
   title: string;
   // status: "actual" | "draft" | "deprecated";
+  assigned_to: string | null;
+  deadline?: string | null;
   status?: "error" | "success" | "in_progress" | "open";
   description?: string;
   severity:

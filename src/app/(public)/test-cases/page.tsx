@@ -16,6 +16,7 @@ import {
   DatePickerProps,
   UploadProps,
   Anchor,
+  Typography,
 } from "antd";
 import {
   Breadcrumb,
@@ -45,6 +46,8 @@ import {
 import styles from "./page.module.css";
 import { CreateProjectModal, NavBar } from "./components";
 import { api } from "@/lib/api";
+
+import emptyImg from "./techny-kanban-board-on-tablet.gif";
 
 const { Header, Content, Sider } = Layout;
 
@@ -172,9 +175,12 @@ export default function Home() {
         <p className={styles.secondaryText}>
           Selecione o projeto na barra lateral para iniciar ou{" "}
           <a href="#" onClick={showCreateDrawer}>
-            Crie um projeto
+            [Crie um novo projeto]
           </a>
         </p>
+      </div>
+      <div className={styles.emptyState}>
+        <img src={emptyImg.src} alt="" />
       </div>
     </div>
   );
