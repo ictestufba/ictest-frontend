@@ -56,6 +56,15 @@ export function Members(props: MembersProps) {
     setOpenCreate(false);
   };
 
+  async function removeMember(id: string) {
+    await api.delete(`/projects/${projectId}/remove-member`, {
+      data: {
+        id,
+      },
+    });
+    mutate();
+  }
+
   if (usersIsLoading) return <Spin />;
 
   return (

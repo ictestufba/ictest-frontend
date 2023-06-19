@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type Project = {
   id: string;
   name: string;
@@ -7,4 +9,5 @@ export type Project = {
   member_access: "add_all";
   created_at: string;
   updated_at: string;
+  members: User[];
 };

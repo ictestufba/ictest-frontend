@@ -70,7 +70,7 @@ export default function Page({
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  useMembers(projectId);
+  const { isAdmin } = useMembers(projectId);
 
   const successCreate = () => {
     messageApi.open({
@@ -184,29 +184,13 @@ export default function Page({
             },
             {
               key: "users",
-              children: (
-                <Members
-                  projectId={projectId}
-                  // onCreateError={errorCreate}
-                  // onCreateSuccess={successCreate}
-                  // onEditError={errorEdit}
-                  // onEditSuccess={successEdit}
-                />
-              ),
+              children: <Members projectId={projectId} />,
               label: "Membros",
+              disabled: !isAdmin,
             },
           ]}
           onChange={(key) => setActiveTab(key as "test-cases" | "users")}
-          // renderTabBar={renderTabBar}
         />
-        {/* <TestCases
-          projectId={projectId}
-          onCloseCreate={onCloseCreate}
-          onCreateError={errorCreate}
-          onCreateSuccess={successCreate}
-          onEditError={errorEdit}
-          onEditSuccess={successEdit}
-        /> */}
       </Content>
     </>
   );

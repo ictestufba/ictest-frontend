@@ -1,3 +1,5 @@
+"use client";
+
 import { api } from "@/lib/api";
 import {
   Button,
@@ -11,13 +13,14 @@ import {
   Upload,
   message,
 } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import { useMembers } from "../../hooks";
 import { TestCase } from "@/types/models";
+import { InboxOutlined } from "@ant-design/icons";
+import axios from "axios";
 
-// import { CreateModalProps } from './types';
-// import { Container } from './styles';
+// import cloudinary from "cloudinary";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -37,16 +40,24 @@ type Payload = {
   title: string;
   type: string;
   assigned_to?: string;
+  files: any;
 };
+
+// cloudinary.config({
+//   cloud_name: "dwvbu2eak",
+//   api_key: "249422772221523",
+//   api_secret: "Tk2TqpjkSx7YZmg2oEJp1o4YJQg",
+// });
 
 export function CreateModal(props: CreateModalProps) {
   const { onClose, open, projectId, onSubmit, onError } = props;
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [image, setImage] = useState<string>();
 
   const { data: users } = useMembers(projectId);
 
-  async function handleCreateTestCase(payload: Payload) {
+  async function handleCreateTestCase({ files, ...payload }: Payload) {
     try {
       const hasSomeEmptyValue = [
         payload.title,
@@ -65,6 +76,7 @@ export function CreateModal(props: CreateModalProps) {
         project_id: projectId,
         is_flaky: false,
         ...payload,
+        attachment: image ?? null,
       });
 
       if (payload.assigned_to) {
@@ -214,7 +226,28 @@ export function CreateModal(props: CreateModalProps) {
           label="Anexos"
           rules={[{ required: false, message: "Anexos" }]}
         >
-          <Dragger {...props}>
+          <Dragger
+            customRequest={async ({ file }) => {
+              try {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", "smskd6ty");
+                formData.append("api_key", "249422772221523");
+
+                const res = await axios.post(
+                  `https://api.cloudinary.com/v1_1/dwvbu2eak/image/upload`,
+                  formData
+                );
+
+                const url = res.data.secure_url;
+                setImage(url);
+                return await fetch(url).then((res) => res.blob());
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            maxCount={1}
+          >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
