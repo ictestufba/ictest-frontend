@@ -39,6 +39,7 @@ type EditModalProps = {
 
 export function EditModal(props: EditModalProps) {
   const { testCase, open, onOk, onCancel, onError } = props;
+  const [image, setImage] = useState<string>();
 
   const { data: users } = useMembers(testCase.project_id);
 
@@ -78,6 +79,7 @@ export function EditModal(props: EditModalProps) {
           ...testCase,
           ...payload,
           deadline,
+           attachment: image ?? testCase.attachment ?? null,
         },
       });
 
@@ -254,6 +256,46 @@ export function EditModal(props: EditModalProps) {
             <Radio.Button value="critical">Crítico</Radio.Button>
           </Radio.Group>
         </Form.Item> */}
+                 <Form.Item
+          name="files"
+          label="Anexos"
+          rules={[{ required: false, message: "Anexos" }]}
+        >
+          <Dragger
+            customRequest={async ({ file }) => {
+              try {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", "smskd6ty");
+                formData.append("api_key", "249422772221523");
+
+                const res = await axios.post(
+                  `https://api.cloudinary.com/v1_1/dwvbu2eak/image/upload`,
+                  formData
+                );
+
+                const url = res.data.secure_url;
+                setImage(url);
+                return await fetch(url).then((res) => res.blob());
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            maxCount={1}
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Se houver algum anexo ao caso clique ou arraste o arquivo para
+              esta área
+            </p>
+            <p className="ant-upload-hint">
+              Suporte para um upload único ou em massa. Apenas arquivos .png,
+              .jpg e .jpeg
+            </p>
+          </Dragger>
+        </Form.Item> 
         <Form.Item
           name="priority"
           label="Prioridade"
