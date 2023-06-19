@@ -80,14 +80,6 @@ export function Login({ onSuccess }: Props) {
           />
         </Form.Item>
 
-        <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{ span: 16 }}
-        >
-          <Checkbox>Me Lembrar</Checkbox>
-        </Form.Item>
-
         <Form.Item wrapperCol={{ span: 16 }}>
           <Button
             type="primary"
