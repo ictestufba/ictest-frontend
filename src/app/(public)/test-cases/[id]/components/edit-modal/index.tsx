@@ -87,9 +87,9 @@ export function EditModal(props: EditModalProps) {
         });
       }
 
-      if (!payload.assigned_to) {
-        await api.delete(`/test-cases/${testCase.id}/remove-assign`);
-      }
+      // if (!payload.assigned_to) {
+      //   await api.delete(`/test-cases/${testCase.id}/remove-assign`);
+      // }
 
       onOk?.();
     } catch (error) {
@@ -237,7 +237,7 @@ export function EditModal(props: EditModalProps) {
         >
           <DatePicker placeholder="Selecione a data" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="severity"
           label="Severidade"
           rules={[
@@ -253,7 +253,7 @@ export function EditModal(props: EditModalProps) {
             <Radio.Button value="blocker">Bloqueador</Radio.Button>
             <Radio.Button value="critical">Crítico</Radio.Button>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="priority"
           label="Prioridade"

@@ -192,7 +192,7 @@ export function CreateModal(props: CreateModalProps) {
         <Form.Item name="deadline" label="Prazo">
           <DatePicker placeholder="Selecione a data limite para o teste" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="severity"
           label="Severidade"
           rules={[
@@ -207,7 +207,7 @@ export function CreateModal(props: CreateModalProps) {
             <Radio.Button value="blocker">Bloqueador</Radio.Button>
             <Radio.Button value="critical">Crítico</Radio.Button>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="priority"
           label="Prioridade"
