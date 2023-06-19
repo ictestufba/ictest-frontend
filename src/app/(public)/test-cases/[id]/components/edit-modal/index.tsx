@@ -72,8 +72,6 @@ export function EditModal(props: EditModalProps) {
     // @ts-ignore
     const deadline = payload.deadline?.$d?.toISOString?.();
 
-    console.log({ payload });
-
     try {
       await api.patch(`/test-cases/${testCase.id}/update`, {
         data: {
@@ -88,6 +86,11 @@ export function EditModal(props: EditModalProps) {
           userEmail: payload.assigned_to,
         });
       }
+
+      // if (!payload.assigned_to) {
+      //   await api.delete(`/test-cases/${testCase.id}/remove-assign`);
+      // }
+
       onOk?.();
     } catch (error) {
       console.error(error);
@@ -145,6 +148,11 @@ export function EditModal(props: EditModalProps) {
             </div> */}
           </div>
         </div>
+        {testCase.attachment && (
+          <div className={styles.footerCard}>
+            <img src={testCase.attachment} alt="" width={200} />
+          </div>
+        )}
       </div>
       <Form onFinish={handleTestCaseEdit} form={form} layout="vertical">
         <Form.Item
@@ -229,7 +237,7 @@ export function EditModal(props: EditModalProps) {
         >
           <DatePicker placeholder="Selecione a data" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="severity"
           label="Severidade"
           rules={[
@@ -245,7 +253,7 @@ export function EditModal(props: EditModalProps) {
             <Radio.Button value="blocker">Bloqueador</Radio.Button>
             <Radio.Button value="critical">Crítico</Radio.Button>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="priority"
           label="Prioridade"

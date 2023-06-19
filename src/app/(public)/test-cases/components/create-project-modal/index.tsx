@@ -1,5 +1,7 @@
 import { api } from "@/lib/api";
+import { getToken } from "@/lib/auth";
 import { Project } from "@/types/models";
+import { parseJWT } from "@/utils/parse-jwt";
 import {
   Button,
   DatePicker,
@@ -40,8 +42,8 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
   const { mutate } = useSWRConfig();
 
   async function handleProjectCase(payload: Payload) {
-    payload.member_access = payload.member_access ?? "add_all";
-    payload.visibility = payload.visibility ?? "public";
+    // payload.member_access = payload.member_access ?? "add_all";
+    // payload.visibility = payload.visibility ?? "public";
 
     const hasSomeEmptyValue = [payload.code, payload.name]
       .map((s) => s.trim())
@@ -50,7 +52,13 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
     if (hasSomeEmptyValue)
       return messageApi.warning("Preencha os campos necessários");
 
-    const response = await api.post<{ project: Project }>(`/projects`, payload);
+    const token = getToken();
+    const currentUser = token ? parseJWT(token) : null;
+
+    const response = await api.post<{ project: Project }>(`/projects`, {
+      ...payload,
+      user_id: currentUser?.sub,
+    });
 
     mutate<Project[]>("projects", (data = []) => [
       ...data,
