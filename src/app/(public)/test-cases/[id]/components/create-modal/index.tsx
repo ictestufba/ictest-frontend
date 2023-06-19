@@ -221,7 +221,7 @@ export function CreateModal(props: CreateModalProps) {
             <Radio.Button value="high">Alta</Radio.Button>
           </Radio.Group>
         </Form.Item>
-        {/* <Form.Item
+         <Form.Item
           name="files"
           label="Anexos"
           rules={[{ required: false, message: "Anexos" }]}
@@ -260,7 +260,7 @@ export function CreateModal(props: CreateModalProps) {
               .jpg e .jpeg
             </p>
           </Dragger>
-        </Form.Item> */}
+        </Form.Item> 
         <Space>
           <Button onClick={onClose}>Cancelar</Button>
           <Button onClick={() => form.submit()} type="primary">
