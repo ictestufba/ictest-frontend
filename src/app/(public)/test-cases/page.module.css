@@ -59,6 +59,11 @@
   justify-content: space-between;
 }
 
+.mainImg {
+  width: 500px;
+  margin-top: -100px;
+}
+
 .successTestCard {
   background-color: rgba(82, 196, 26, 0.2);
   cursor: pointer;

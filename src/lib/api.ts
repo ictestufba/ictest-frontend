@@ -33,7 +33,7 @@ const refreshTokenFn = async () => {
 };
 
 const api = axios.create({
-  baseURL: "https://ictest-backend-production.up.railway.app/",
+  baseURL: "https://ictest-backend.up.railway.app/",
   headers: {
     "content-type": "application/json",
   },
