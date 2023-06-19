@@ -18,10 +18,13 @@ import {
   Select,
   Radio,
   Button,
+  DatePicker,
 } from "antd";
 import { format } from "date-fns";
 import { testCaselabelByType } from "../../../constants";
 import { api } from "@/lib/api";
+import { useMembers } from "../../hooks";
+import dayjs from "dayjs";
 
 const { Dragger } = Upload;
 const { Option } = Select;
@@ -36,6 +39,8 @@ type EditModalProps = {
 
 export function EditModal(props: EditModalProps) {
   const { testCase, open, onOk, onCancel, onError } = props;
+
+  const { data: users } = useMembers(testCase.project_id);
 
   function renderStatusLabel() {
     if (testCase.status === "error") return "Falha";
@@ -63,14 +68,26 @@ export function EditModal(props: EditModalProps) {
     return null;
   }
 
-  async function handleTestCaseEdit(payload: any) {
+  async function handleTestCaseEdit(payload: Partial<TestCase>) {
+    // @ts-ignore
+    const deadline = payload.deadline?.$d?.toISOString?.();
+
+    console.log({ payload });
+
     try {
       await api.patch(`/test-cases/${testCase.id}/update`, {
         data: {
           ...testCase,
           ...payload,
+          deadline,
         },
       });
+
+      if (payload.assigned_to) {
+        await api.patch(`/test-cases/${testCase.id}/assign`, {
+          userEmail: payload.assigned_to,
+        });
+      }
       onOk?.();
     } catch (error) {
       console.error(error);
@@ -82,6 +99,9 @@ export function EditModal(props: EditModalProps) {
     await api.delete(`/test-cases/${testCase.id}`);
     onOk?.();
   }
+
+  const assignedTo = users?.find((user) => user.id === testCase.assigned_to);
+  const assignedEmail = assignedTo?.email;
 
   return (
     <Modal
@@ -167,6 +187,7 @@ export function EditModal(props: EditModalProps) {
             <Option value="exploratory">Exploratório</Option>
           </Select>
         </Form.Item>
+
         <Form.Item
           name="status"
           label="Status"
@@ -177,8 +198,36 @@ export function EditModal(props: EditModalProps) {
             <Radio.Button value="error">Falha</Radio.Button>
             <Radio.Button value="success">Sucesso</Radio.Button>
             <Radio.Button value="in_progress">Em Progresso</Radio.Button>
-            <Radio.Button value="opened">Aberto</Radio.Button>
+            <Radio.Button value="open">Aberto</Radio.Button>
           </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          name="assigned_to"
+          label="Responsável"
+          rules={[
+            {
+              required: false,
+            },
+          ]}
+          initialValue={assignedEmail}
+        >
+          <Select placeholder="Selecione o responsável">
+            {users?.map((user) => (
+              <Option key={user.email} value={user.email}>
+                {user.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="deadline"
+          label="Prazo"
+          initialValue={
+            testCase.deadline ? dayjs(testCase.deadline) : testCase.deadline
+          }
+        >
+          <DatePicker placeholder="Selecione a data" />
         </Form.Item>
         <Form.Item
           name="severity"
@@ -197,6 +246,20 @@ export function EditModal(props: EditModalProps) {
             <Radio.Button value="critical">Crítico</Radio.Button>
           </Radio.Group>
         </Form.Item>
+        <Form.Item
+          name="priority"
+          label="Prioridade"
+          rules={[
+            { required: false, message: "Selecione a prioridade do teste" },
+          ]}
+        >
+          <Radio.Group size="small" defaultValue="low">
+            <Radio.Button value="low">Baixa</Radio.Button>
+            <Radio.Button value="medium">Média</Radio.Button>
+            <Radio.Button value="high">Alta</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+
         {/* <Form.Item
           name="files"
           label="Anexos"

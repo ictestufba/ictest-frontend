@@ -1,0 +1,11 @@
+.inputContainer {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.contentContainerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

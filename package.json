@@ -16,16 +16,19 @@
     "antd": "^5.4.2",
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
+    "dayjs": "^1.11.8",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "next": "13.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
+    "react-lottie": "^1.2.3",
     "swr": "^2.1.5",
     "typescript": "5.0.2"
   },
   "devDependencies": {
+    "@types/react-lottie": "^1.2.6",
     "prettier": "2.8.8"
   }
 }

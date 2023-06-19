@@ -1,60 +1,28 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import useSwr, { useSWRConfig } from "swr";
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-  ClockCircleOutlined,
-  AntDesignOutlined,
-  InboxOutlined,
-  DeleteFilled,
-} from "@ant-design/icons";
+import React, { useState } from "react";
+import useSwr from "swr";
+import { DeleteFilled } from "@ant-design/icons";
 import {
   MenuProps,
   RadioChangeEvent,
   DatePickerProps,
   UploadProps,
   Spin,
+  Tabs,
 } from "antd";
-import {
-  Breadcrumb,
-  Layout,
-  Menu,
-  Card,
-  Col,
-  Row,
-  Tag,
-  Avatar,
-  Pagination,
-  Button,
-  Tooltip,
-  Input,
-  Drawer,
-  Form,
-  Space,
-  Select,
-  Radio,
-  DatePicker,
-  Upload,
-  Dropdown,
-  Modal,
-  message,
-  theme,
-} from "antd";
-import styles from "./page.module.css";
-import { Project, TestCase } from "@/types/models";
+import { Layout, Button, Modal, message } from "antd";
+
+import { Project } from "@/types/models";
 import { api } from "@/lib/api";
-import { CreateModal, EditModal, TestCaseCard } from "./components";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+import { Members, TestCases } from "./components";
 
-const { Header, Content, Sider } = Layout;
+import styles from "./page.module.css";
+import { useMembers } from "./hooks";
 
-const { Search } = Input;
-const { Option } = Select;
-const { Dragger } = Upload;
+const { Content } = Layout;
 
 const onChangeSeverity = (e: RadioChangeEvent) => {
   console.log(`radio checked:${e.target.value}`);
@@ -98,12 +66,11 @@ export default function Page({
   const projectId = params.id;
 
   const router = useRouter();
-  const [openCreate, setOpenCreate] = useState(false);
-  const [searchTerm, setSearchTerm] = useState<string>();
-  const [form] = Form.useForm();
-  const [openEdit, setOpenEdit] = useState(false);
-  const [selectedTestCaseId, setSelectedTestCaseId] = useState<string>();
+  const [activeTab, setActiveTab] = useState<"test-cases" | "users">();
+
   const [messageApi, contextHolder] = message.useMessage();
+
+  useMembers(projectId);
 
   const successCreate = () => {
     messageApi.open({
@@ -133,23 +100,9 @@ export default function Page({
     });
   };
 
-  const showCreateDrawer = () => {
-    setOpenCreate(true);
-  };
-
-  const showEditModal = () => {
-    setOpenEdit(true);
-  };
-
-  const onCloseCreate = () => {
-    // if(success) {
-    //   successCreate();
-    // } else {
-    //   errorCreate();
-    // }
-
-    setOpenCreate(false);
-  };
+  // const onCloseCreate = () => {
+  //   setOpenCreate(false);
+  // };
 
   const warningDeleteTestCase = () => {
     Modal.warning({
@@ -158,22 +111,10 @@ export default function Page({
     });
   };
 
-  const items = [
-    {
-      key: "1",
-      label: "Editar",
-    },
-    {
-      key: "2",
-      label: "Excluir",
-    },
-  ];
-
   const onMenuClick: MenuProps["onClick"] = (e) => {
     warningDeleteTestCase();
   };
 
-  const { mutate: globalMutate } = useSWRConfig();
   const { data: project, isLoading: projectIsLoading } = useSwr<Project>(
     `/project/${projectId}`,
     async () => {
@@ -185,58 +126,13 @@ export default function Page({
     }
   );
 
-  const {
-    data: testCases,
-    isLoading: testCasesIsLoading,
-    mutate,
-  } = useSwr<TestCase[]>(`/project/${projectId}/test-cases`, async () => {
-    const response = await api.get<{ testCases: TestCase[] }>(
-      `/projects/${projectId}/test-cases`
-    );
-
-    return response.data.testCases;
-  });
-
-  const filterdTestCases = useMemo(() => {
-    if (!searchTerm) return testCases;
-
-    return testCases?.filter((testCase) => testCase.title.includes(searchTerm));
-  }, [searchTerm, testCases]);
-
   if (projectIsLoading) return <Spin />;
-
-  //   if(testCasesIsLoading)
-
-  function handleTestCaseCardClick(testCaseId: string) {
-    setSelectedTestCaseId(testCaseId);
-    setOpenEdit(true);
-  }
 
   function renderCreatedAt() {
     if (!project?.created_at) return null;
 
     return format(new Date(project.created_at), "dd/MM/yyyy HH:mm");
   }
-
-  function renderTestCases() {
-    if (!testCases) return <Spin />;
-
-    if (!testCases.length)
-      return <Col span={12}>Nenhum caso de teste cadastrado ainda</Col>;
-
-    if (!filterdTestCases?.length)
-      return <Col span={12}>Nenhum caso de teste encontrado</Col>;
-
-    return filterdTestCases.map((testCase) => (
-      <Col span={8} key={testCase.id}>
-        <TestCaseCard onClick={handleTestCaseCardClick} testCase={testCase} />
-      </Col>
-    ));
-  }
-
-  const selectedTestCase = testCases?.find(
-    (testCase) => testCase.id === selectedTestCaseId
-  );
 
   async function handleDeleteProject() {
     await api.delete(`/projects/${projectId}`);
@@ -246,37 +142,7 @@ export default function Page({
   return (
     <>
       {contextHolder}
-      {openCreate ? (
-        <CreateModal
-          projectId={projectId}
-          onSubmit={() => {
-            onCloseCreate();
-            mutate();
-            globalMutate("/projects");
-            successCreate();
-          }}
-          onError={errorCreate}
-          onClose={onCloseCreate}
-          open={openCreate}
-        />
-      ) : (
-        <></>
-      )}
-      {openEdit && selectedTestCase ? (
-        <EditModal
-          onCancel={() => setOpenEdit(false)}
-          onError={errorEdit}
-          onOk={() => {
-            setOpenEdit(false);
-            mutate();
-            successEdit();
-          }}
-          open={openEdit}
-          testCase={selectedTestCase}
-        />
-      ) : (
-        <></>
-      )}
+
       <h2>
         {project?.name}{" "}
         <Button danger onClick={handleDeleteProject}>
@@ -286,28 +152,11 @@ export default function Page({
       <p>{project?.description}</p>
       <div className={styles.contentContainerHeader}>
         <p className={styles.secondaryText}>Criado em {renderCreatedAt()}</p>
-        {/* <Avatar.Group
-          maxCount={3}
-          maxStyle={{ color: "#f56a00", backgroundColor: "#fde3cf" }}
-        >
-          <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=2" />
-          <Avatar style={{ backgroundColor: "#f56a00" }}>K</Avatar>
-          <Tooltip title="Ant User" placement="top">
-            <Avatar
-              style={{ backgroundColor: "#87d068" }}
-              icon={<UserOutlined />}
-            />
-          </Tooltip>
-          <Avatar
-            style={{ backgroundColor: "#1890ff" }}
-            icon={<AntDesignOutlined />}
-          />
-        </Avatar.Group> */}
       </div>
 
       <Content
         style={{
-          padding: 24,
+          padding: 0,
           margin: 0,
           minHeight: 280,
           background: "#FFFFFF",
@@ -316,150 +165,47 @@ export default function Page({
           gap: 16,
         }}
       >
-        {testCases && testCases.length > 0 && (
-          <Search
-            placeholder="Digite o título do caso de teste que deseja"
-            enterButton
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        )}
-        <div className={styles.contentContainerHeader}>
-          <h3>{testCases?.length ?? "-"} casos de teste disponíveis</h3>
-          <Button onClick={showCreateDrawer} type="primary">
-            Criar caso de teste
-          </Button>
-        </div>
-        <Row gutter={16}>
-          {renderTestCases()}
-          {/* {testCases?.map((testCase) => (
-            <Col span={8} key={testCase.id}>
-              <TestCaseCard testCase={testCase} />
-            </Col>
-          ))} */}
-          {/* <Col span={8}> */}
-          {/* <TestCaseCard testCase={} /> */}
-          {/* <Card
-              onClick={showEditModal}
-              className={styles.successTestCard}
-              bordered={false}
-            >
-              <div className={styles.testContent}>
-                <div className={styles.statusContainer}>
-                  <span className={styles.successStatus}></span>
-                  <p>Sucesso</p>
-                </div>
-                <h3>Título do Caso</h3>
-                <p>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry.{" "}
-                </p>
-                <div className={styles.tagsContainer}>
-                  <Tag color="default">SPRINT 1</Tag>
-                  <Tag icon={<ClockCircleOutlined />} color="success">
-                    24 ABR
-                  </Tag>
-                </div>
-                <div className={styles.footerCard}>
-                  <p className={styles.secondaryText}>Criado por Fred Durão</p>
-                  <div className={styles.assignContainer}>
-                    <p className={styles.secondaryText}>Atribuído a </p>
-                    <Avatar size="small" icon={<UserOutlined />} />
-                  </div>
-                </div>
-              </div>
-            </Card> */}
-          {/* </Col> */}
-          {/* <Col span={8}>
-            <Card className={styles.failTestCard} bordered={false}>
-              <div className={styles.testContent}>
-                <div className={styles.statusContainer}>
-                  <span className={styles.failStatus}></span>
-                  <p>Falha</p>
-                </div>
-                <h3>Título do Caso</h3>
-                <p>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry.{" "}
-                </p>
-                <div className={styles.tagsContainer}>
-                  <Tag color="default">SPRINT 1</Tag>
-                  <Tag icon={<ClockCircleOutlined />} color="default">
-                    24 ABR
-                  </Tag>
-                </div>
-                <div className={styles.footerCard}>
-                  <p className={styles.secondaryText}>Criado por Fred Durão</p>
-                  <div className={styles.assignContainer}>
-                    <p className={styles.secondaryText}>Atribuído a </p>
-                    <Avatar size="small" icon={<UserOutlined />} />
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card className={styles.onProgressTestCard} bordered={false}>
-              <div className={styles.testContent}>
-                <div className={styles.statusContainer}>
-                  <span className={styles.onProgressStatus}></span>
-                  <p>Em progresso</p>
-                </div>
-                <h3>Título do Caso</h3>
-                <p>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry.{" "}
-                </p>
-                <div className={styles.tagsContainer}>
-                  <Tag color="default">SPRINT 1</Tag>
-                  <Tag icon={<ClockCircleOutlined />} color="error">
-                    24 ABR
-                  </Tag>
-                </div>
-                <div className={styles.footerCard}>
-                  <p className={styles.secondaryText}>Criado por Fred Durão</p>
-                  <div className={styles.assignContainer}>
-                    <p className={styles.secondaryText}>Atribuído a </p>
-                    <Avatar size="small" icon={<UserOutlined />} />
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col> */}
-        </Row>
-        {/* <Row>
-          <Col span={8}>
-            <Card className={styles.openTestCard} bordered={false}>
-              <div className={styles.testContent}>
-                <div className={styles.statusContainer}>
-                  <span className={styles.openStatus}></span>
-                  <p>Aberto</p>
-                </div>
-                <h3>Título do Caso</h3>
-                <p>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry.{" "}
-                </p>
-                <div className={styles.tagsContainer}>
-                  <Tag color="default">SPRINT 1</Tag>
-                  <Tag icon={<ClockCircleOutlined />} color="default">
-                    24 ABR
-                  </Tag>
-                </div>
-                <div className={styles.footerCard}>
-                  <p className={styles.secondaryText}>Criado por Fred Durão</p>
-                  <div className={styles.assignContainer}>
-                    <p className={styles.secondaryText}>Atribuído a </p>
-                    <Avatar size="small" icon={<UserOutlined />} />
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Col>
-        </Row> */}
-        {/* <Pagination
-          style={{ alignSelf: "flex-end" }}
-          defaultCurrent={1}
-          total={50}
+        <Tabs
+          defaultActiveKey={"test-cases"}
+          activeKey={activeTab}
+          items={[
+            {
+              key: "test-cases",
+              children: (
+                <TestCases
+                  projectId={projectId}
+                  onCreateError={errorCreate}
+                  onCreateSuccess={successCreate}
+                  onEditError={errorEdit}
+                  onEditSuccess={successEdit}
+                />
+              ),
+              label: "Casos de teste",
+            },
+            {
+              key: "users",
+              children: (
+                <Members
+                  projectId={projectId}
+                  // onCreateError={errorCreate}
+                  // onCreateSuccess={successCreate}
+                  // onEditError={errorEdit}
+                  // onEditSuccess={successEdit}
+                />
+              ),
+              label: "Membros",
+            },
+          ]}
+          onChange={(key) => setActiveTab(key as "test-cases" | "users")}
+          // renderTabBar={renderTabBar}
+        />
+        {/* <TestCases
+          projectId={projectId}
+          onCloseCreate={onCloseCreate}
+          onCreateError={errorCreate}
+          onCreateSuccess={successCreate}
+          onEditError={errorEdit}
+          onEditSuccess={successEdit}
         /> */}
       </Content>
     </>

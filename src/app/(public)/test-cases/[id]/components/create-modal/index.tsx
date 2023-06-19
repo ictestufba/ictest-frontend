@@ -13,6 +13,8 @@ import {
 } from "antd";
 import React from "react";
 import { useSWRConfig } from "swr";
+import { useMembers } from "../../hooks";
+import { TestCase } from "@/types/models";
 
 // import { CreateModalProps } from './types';
 // import { Container } from './styles';
@@ -34,12 +36,15 @@ type Payload = {
   severity?: string;
   title: string;
   type: string;
+  assigned_to?: string;
 };
 
 export function CreateModal(props: CreateModalProps) {
   const { onClose, open, projectId, onSubmit, onError } = props;
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { data: users } = useMembers(projectId);
 
   async function handleCreateTestCase(payload: Payload) {
     try {
@@ -56,11 +61,17 @@ export function CreateModal(props: CreateModalProps) {
 
       payload.priority = payload.priority ?? "low";
       payload.severity = payload.severity ?? "minor";
-      await api.post(`/test-cases`, {
+      const { data } = await api.post<{ test_case: TestCase }>(`/test-cases`, {
         project_id: projectId,
         is_flaky: false,
         ...payload,
       });
+
+      if (payload.assigned_to) {
+        await api.patch(`/test-cases/${data.test_case.id}/assign`, {
+          userEmail: payload.assigned_to,
+        });
+      }
       onSubmit?.();
     } catch (error) {
       console.error(error);
@@ -148,6 +159,27 @@ export function CreateModal(props: CreateModalProps) {
             <Option value="fred">Fred</Option>
           </Select>
         </Form.Item> */}
+        <Form.Item
+          name="assigned_to"
+          label="Responsável"
+          rules={[
+            {
+              required: false,
+            },
+          ]}
+        >
+          <Select placeholder="Selecione o responsável">
+            {users?.map((user) => (
+              <Option key={user.email} value={user.email}>
+                {user.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="deadline" label="Prazo">
+          <DatePicker placeholder="Selecione a data limite para o teste" />
+        </Form.Item>
         <Form.Item
           name="severity"
           label="Severidade"
