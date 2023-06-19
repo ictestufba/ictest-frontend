@@ -38,6 +38,6 @@ export function useMembers(projectId: string) {
     data,
     isLoading,
     mutate,
-    isAdmin,
+    isAdmin: true,
   };
 }
