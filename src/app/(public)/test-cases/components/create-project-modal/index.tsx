@@ -57,7 +57,7 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
 
     const response = await api.post<{ project: Project }>(`/projects`, {
       ...payload,
-      user_id: currentUser?.sub,
+      userId: currentUser?.sub,
     });
 
     mutate<Project[]>("projects", (data = []) => [
