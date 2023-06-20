@@ -45,24 +45,26 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
-      <Row justify="center">
-        <Space direction="vertical" align="center">
-          <Typography.Title color="white">
-            <FileSearchOutlined /> ictest
-          </Typography.Title>
-          <Typography.Paragraph>
-            Sistema de Gerenciamento de Casos de Teste
-          </Typography.Paragraph>
-        </Space>
-      </Row>
-      <Row justify="center">
-        <Tabs
-          defaultActiveKey={TabOptions.LOGIN}
-          items={tabs}
-          onChange={(key) => setActiveTab(key as TabOptions)}
-          renderTabBar={renderTabBar}
-        />
-      </Row>
+      <div className={styles.subContainer}>
+        <Row justify="center">
+          <Space direction="vertical" align="center">
+            <Typography.Title color="white">
+              <FileSearchOutlined /> ictest
+            </Typography.Title>
+            <Typography.Paragraph className={styles.subtext}>
+              Sistema de Gerenciamento de Casos de Teste
+            </Typography.Paragraph>
+          </Space>
+        </Row>
+        <Row justify="center">
+          <Tabs
+            defaultActiveKey={TabOptions.LOGIN}
+            items={tabs}
+            onChange={(key) => setActiveTab(key as TabOptions)}
+            renderTabBar={renderTabBar}
+          />
+        </Row>
+      </div>
     </main>
   );
 }

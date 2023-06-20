@@ -173,14 +173,12 @@ export default function Home() {
       <p>Bem-vindo(a) a plataforma</p>
       <div className={styles.contentContainerHeader}>
         <p className={styles.secondaryText}>
-          Selecione o projeto na barra lateral para iniciar ou{" "}
-          <a href="#" onClick={showCreateDrawer}>
-            [Crie um novo projeto]
-          </a>
+          Selecione um projeto na barra lateral para iniciar ou{" "}
         </p>
       </div>
+      <Button onClick={showCreateDrawer}>Crie um novo projeto</Button>
       <div className={styles.emptyState}>
-        <img src={emptyImg.src} alt="" />
+        <img className={styles.mainImg} src={emptyImg.src} alt="" />
       </div>
     </div>
   );

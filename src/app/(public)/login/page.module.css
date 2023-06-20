@@ -6,23 +6,38 @@
   width: 100%;
   flex-direction: column;
 
-  background: radial-gradient(circle at 0 0, #67f895 0%, transparent 60%),
-    radial-gradient(circle at 100% 100%, #fd5170 0%, transparent 60%),
-    radial-gradient(circle at 100% 0%, #f8de67 0%, transparent 60%),
-    radial-gradient(circle at 0% 100%, #03a9f4 0%, transparent 60%), #303030;
+  background-image: radial-gradient(circle at 0 0, #67f895 0%, transparent 70%),
+    radial-gradient(circle at 100% 100%, #fd5170 0%, transparent 70%),
+    radial-gradient(circle at 100% 0%, #f8de67 0%, transparent 70%),
+    radial-gradient(circle at 0% 100%, #03a9f4 0%, transparent 70%),
+    url("../../../../public/mainImg.png");
+}
+
+.subContainer {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 56px;
+}
+
+.subtext {
+  color: #fafafa;
 }
 
 .container h1,
 .container p {
-  color: white;
+  color: #fafafa;
 }
 
 .tabBarList {
-  color: white;
+  color: #fafafa;
 }
 
 .tabBarList * {
-  color: white !important;
+  color: #fafafa !important;
 }
 
 .tabBarList .ant-tabs-nav-wrap {
@@ -32,5 +47,5 @@
 .tabBarList
   :where(.css-dev-only-do-not-override-htwhyh).ant-tabs
   .ant-tabs-ink-bar {
-  background: white !important;
+  background: #fafafa !important;
 }
