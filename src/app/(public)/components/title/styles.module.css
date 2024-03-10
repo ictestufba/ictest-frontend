@@ -1,0 +1,28 @@
+.container{
+  margin: 30px 0 0 50px;
+}
+
+.divider{
+  border-top: 2px solid #d6d6d6;
+  border-radius: 5px;
+}
+
+.title{
+  font-size: 1.8rem;
+}
+
+.titleContainer{
+  display: flex;
+  flex-flow: row nowrap;
+  align-content: center;
+  justify-content: space-between;
+}
+
+.buttonContainer{
+  margin-right: 50px;
+  background-color: #004d94;
+}
+
+.buttonContainer:hover{
+  background-color: #006fd6 !important;
+}

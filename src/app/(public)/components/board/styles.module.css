@@ -1,0 +1,49 @@
+.container{
+  width: 100vw;
+  height: 90vh;
+  padding: 40px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-flow: row wrap;
+  gap: 10px 30px;
+}
+
+.innerContainer{
+  background-color: #f1f1f1;
+  min-width: 300px;
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+}
+
+.innerTitleContainer{
+  margin: 10px;
+  background-color: #e6e6e6;
+  display: flex;
+  min-width: 300px;
+
+  justify-content: center;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.innerTitle{
+  padding: 10px;
+  font: 1em sans-serif;
+}
+
+.cardContainer{
+  display: flex;
+  justify-content: center;
+}
+
+.draggableContainerBase{
+  height: 100%;
+}
+
+.draggableContainerFlow{
+  height: 100%;
+  background-color: #e2ecfd;
+  border: 1px solid #82b1fc;
+  border-radius: 10px;
+}

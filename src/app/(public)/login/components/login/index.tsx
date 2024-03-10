@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 import { setToken } from "@/lib/auth";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, message } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message } from "antd";
 
 type Data = {
   email: string;
