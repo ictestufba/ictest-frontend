@@ -1,49 +1,15 @@
+import { removeToken } from "@/lib/auth";
 import { LogoutOutlined, MenuOutlined, ProjectOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Button, Drawer, Layout } from "antd";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LeftMenu } from "./LeftMenu";
 import { RightMenu } from "./RightMenu";
+
 import styles from "./styles.module.css";
 
 export type NavbarOption = "teams" | "projects";
-
-const menuItems: { left: MenuProps['items'], right: MenuProps['items'] } = {
-  left: [
-    {
-      label: 'Times',
-      key: 'teams',
-      icon: <TeamOutlined />,
-      className: styles.menuItem
-    },
-    {
-      label: 'Projetos',
-      key: 'projects',
-      icon: <ProjectOutlined />,
-      className: styles.menuItem
-    },
-  ],
-  right: [
-    {
-      label:(
-        <>
-          <Avatar icon={<UserOutlined />} />
-          <span className={styles.username}>John Doe</span>
-        </>
-      ),
-      key: "submenu",
-      className: styles.submenu,
-      children: [
-        {
-          label: 'Logout',
-          key: 'logout',
-          icon: <LogoutOutlined />,
-          className: styles.menuItem,
-        }
-      ],
-    },
-  ],
-}
 
 type props = {
   selectedOption: NavbarOption;
@@ -51,6 +17,7 @@ type props = {
 };
 
 export function Navbar({ selectedOption, onClick }:props) {
+  const router = useRouter();
   const [visible, setVisible] = useState(false);
   const showDrawer = () => {
     setVisible(!visible);
@@ -70,13 +37,59 @@ export function Navbar({ selectedOption, onClick }:props) {
     };
   }, []); // Empty dependency array means this effect runs once on mount
 
+  const onLogout=() => {
+    removeToken();
+    router.push("/login");
+  }
+
+  const menuItems: { left: MenuProps['items'], right: MenuProps['items'] } = {
+    left: [
+      {
+        label: 'Times',
+        key: 'teams',
+        icon: <TeamOutlined />,
+        className: styles.menuItem,
+        onClick: () => {},
+      },
+      {
+        label: 'Projetos',
+        key: 'projects',
+        icon: <ProjectOutlined />,
+        className: styles.menuItem,
+        onClick: () => {},
+      },
+    ],
+    right: [
+      {
+        label:(
+          <>
+            <Avatar icon={<UserOutlined />} />
+            <span className={styles.username}>John Doe</span>
+          </>
+        ),
+        key: "submenu",
+        className: styles.submenu,
+        children: [
+          {
+            label: 'Logout',
+            key: 'logout',
+            icon: <LogoutOutlined />,
+            className: styles.menuItem,
+            onClick: onLogout
+          }
+        ],
+      },
+    ],
+  }
 
   return (
     <nav className={styles.navbar}>
       <Layout>
         <Layout.Header className={styles.navHeader}>
           <div className={styles.logo}>
-            <h3 className={styles.brandFont}>ICTEST</h3>
+            <h3 className={styles.brandFont}>
+              <a onClick={()=>router.push("/home")}>IC TEST</a>
+            </h3>
           </div>
           <div className={styles.navbarMenu}>
             <div className={styles.leftMenu}>
@@ -90,7 +103,6 @@ export function Navbar({ selectedOption, onClick }:props) {
             </div>
 
             <Drawer
-              title={"Brand Here"}
               placement="right"
               closable={true}
               onClose={showDrawer}

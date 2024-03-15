@@ -5,89 +5,6 @@
 import { Button, Col, Row, Typography } from "antd";
 import Link from "next/link";
 
-// const roboto = Roboto({
-//   weight: ["100", "300", "400", "500", "700"],
-// });
-
-// const data = [
-//   {
-//     key: '1',
-//     name: 'John Brown',
-//     code: "PGXX",
-//     status: "running",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '2',
-//     name: 'Jim Green',
-//     code: "PGXX",
-//     status: "paused",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '3',
-//     name: 'Joe Black',
-//     code: "PGXX",
-//     status: "created",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '4',
-//     name: 'Joe Black',
-//     code: "PGXX",
-//     status: "canceled",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '5',
-//     name: 'John Brown',
-//     code: "PGXX",
-//     status: "running",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '6',
-//     name: 'Jim Green',
-//     code: "PGXX",
-//     status: "paused",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '7',
-//     name: 'Joe Black',
-//     code: "PGXX",
-//     status: "created",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '8',
-//     name: 'Joe Black',
-//     code: "PGXX",
-//     status: "canceled",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '9',
-//     name: 'Joe Black',
-//     code: "PGXX",
-//     status: "canceled",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '10',
-//     name: 'Joe Black',
-//     code: "PGXX",
-//     status: "canceled",
-//     responsible: "Erick Kokubum"
-//   },
-//   {
-//     key: '11',
-//     name: 'Joe Black',
-//     code: "PGXX",
-//     status: "canceled",
-//     responsible: "Erick Kokubum"
-//   },
-// ];
 
 export default function Home() {
   return (
@@ -259,7 +176,7 @@ export default function Home() {
       </Row>
       <Row justify="center">
         <Col>
-          <Link href="/home">
+          <Link href="/login">
             <Button type="primary">Ir para dashboard ↗</Button>
           </Link>
         </Col>

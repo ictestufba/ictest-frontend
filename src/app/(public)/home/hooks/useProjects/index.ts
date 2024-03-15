@@ -1,4 +1,7 @@
-import { Project } from "@/types/models/project";
+import { api } from "@/lib/api";
+import { Project } from "@/types/models";
+import useSwr from "swr";
+
 
 const mockResponse: GetProjectsResponse = {
   projects: [
@@ -155,27 +158,19 @@ type GetProjectsResponse = {
 }
 
 export function useProjects(isValidFlow:boolean) {
-  // const { data: response, isLoading, mutate, error } = useSwr<GetProjectsResponse>(isValidFlow & `/projects`);
+  const { data: dataProjects, mutate } = useSwr(isValidFlow && `/projects`, async () => {
+    const response = await api.get<GetProjectsResponse>("/projects");
 
-  // const projects = response?.projects;
+    return response.data.projects;
+  });
 
-  // const userProjects = useMemo(() => {
-  //   const token = getToken();
-  //   if (!token) throw new Error();
-
-  //   const currentUserData = parseJWT(token);
-  //   const currentUserId = currentUserData.sub;
-  //   const userProjects = projects?.filter((project) => project.members.some((member)=>member.id === currentUserId));
-
-  //   return userProjects;
-  // }, [projects]);
-
+  const projects = dataProjects ?? [];
 
   return {
-    projects:mockResponse.projects,
-    userProjects:mockResponse.projects,
+    projects,
+    userProjects: mockResponse.projects,
     isLoading: false,
-    mutate: null,
+    mutate,
     error: null,
   };
 }

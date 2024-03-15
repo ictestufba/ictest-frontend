@@ -4,8 +4,11 @@ import { Project } from "@/types/models";
 import { Team } from "@/types/models/team";
 import { Spin } from "antd";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { ModelCard } from "../components/card/model";
+import { CreateProjectModal } from "../components/modal/project";
+import { CreateTeamModal } from "../components/modal/team";
 import { SearchBar } from "../components/search";
 import { ProjectDataType, TableList, TeamDataType } from "../components/table";
 import { CustomTitle } from "../components/title";
@@ -16,19 +19,61 @@ import { NavbarCtx } from "./template";
 
 
 export default function Home() {
+  const [openCreate, setOpenCreate] = useState(false);
   const [searchString, setSearchString] = useState("");
   let { selectedOption } = useContext(NavbarCtx);
+  const router = useRouter();
 
   let { teams, userTeams, isLoading: teamIsLoading } = useTeams(selectedOption === "teams");
   const { projects, userProjects, isLoading: projectIsLoading } = useProjects(selectedOption === "projects");
   const isLoading = (selectedOption === "teams" && teamIsLoading) || (selectedOption === "projects" && projectIsLoading)
   const isTeamOption = selectedOption === "teams";
 
+  const redirect = (id:string) => {
+    if(isTeamOption){
+      return router.push(`/home/teams/${id}`)
+    }
+
+    return router.push(`/home/projects/${id}`)
+  }
+
+  const showCreateDrawer = () => {
+    setOpenCreate(true);
+  };
+
+  const onCloseCreate = () => {
+    setOpenCreate(false);
+  };
+
+  const openCreateModal = () => {
+    if (isTeamOption){
+      return <>
+        {openCreate && (
+          <CreateTeamModal
+            open={openCreate}
+            onClose={onCloseCreate}
+            onSubmit={onCloseCreate}
+          />
+        )}
+      </>
+    }
+
+    return <>
+      {openCreate && (
+        <CreateProjectModal
+          open={openCreate}
+          onClose={onCloseCreate}
+          onSubmit={onCloseCreate}
+        />
+      )}
+    </>
+  }
 
   const title = isTeamOption ? "Times" : "Projetos";
   return (
     <div className={styles.container}>
-      <CustomTitle text={`Meus ${title}`} divider newBtn/>
+      {openCreate && openCreateModal()}
+      <CustomTitle text={`Meus ${title}`} divider newBtn onClick={showCreateDrawer}/>
       <div className={styles.cardContainer}>
         {
           !isLoading ? (
@@ -85,12 +130,18 @@ export default function Home() {
         {
           !isLoading ? (
             <>
-            <div className={styles.searchContainer}>
-              <SearchBar placeholder="Filtre pelo nome..." onChange={(e)=>{
-                  setSearchString(e.target.value);
-              }}/>
-            </div>
-            <TableList columnType={selectedOption} data={isTeamOption ? mapTeamsToTeamsDataType(teams, searchString): mapProjectsToProjectsDataType(projects, searchString) } pagination={{position: ["bottomCenter"], responsive: true}} onChange={()=>console.log("FOI")} />
+              <div className={styles.searchContainer}>
+                <SearchBar placeholder="Filtre pelo nome..." onChange={(e)=>{
+                    setSearchString(e.target.value);
+                }}/>
+              </div>
+              <TableList 
+                columnType={selectedOption!} 
+                data={isTeamOption ? mapTeamsToTeamsDataType(teams, searchString): mapProjectsToProjectsDataType(projects, searchString) } 
+                pagination={{position: ["bottomCenter"], responsive: true}} 
+                onChange={()=>console.log("FOI")}
+                onRowClick={redirect}
+              />
             </>
           ): (
             <div className={styles.spinContainer}>

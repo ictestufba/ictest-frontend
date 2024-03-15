@@ -1,4 +1,4 @@
-import { TestCase, User } from "@/types/models";
+import { TestCase } from "@/types/models";
 import { renderPriorityLabel } from "@/utils/renderPriorityLabel";
 import { renderStatusLabel } from "@/utils/renderStatusLabel";
 import {
@@ -7,6 +7,7 @@ import {
 import { Avatar, Card, Divider, Tag } from "antd";
 import { format } from "date-fns";
 import { useMemo } from "react";
+import { useMembers } from "../../../home/projects/[id]/hooks/useMembers";
 import styles from "./styles.module.css";
 
 const { Meta } = Card;
@@ -17,21 +18,14 @@ type CaseCardProps = {
 };
 
 export function CaseCard({testCase, onClick}: CaseCardProps) {
-  // const { data: users } = useMembers(testCase.project_id);
+  const { data: users } = useMembers(testCase.project_id);
   const date = testCase.deadline ? new Date(testCase.deadline) : null;
   const formattedDate = date ? format(date, "dd/MM/yyyy HH:mm") : null;
 
-  // const user = useMemo(
-  //   () => users?.find((user) => user.id === testCase.assigned_to),
-  //   [users, testCase.assigned_to]
-  // );
-
-  const user: User = {
-    id: "1",
-    name: "Erick Kokubum",
-    email: "eskokubum@gmail.com",
-    role: "admin"
-  }
+  const user = useMemo(
+    () => users?.find((user) => user.id === testCase.assigned_to),
+    [users, testCase.assigned_to]
+  );
 
   const statusStyle = useMemo(() => {
     if (testCase.status === "error") return styles.failTestCard;

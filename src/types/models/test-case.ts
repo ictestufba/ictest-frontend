@@ -8,7 +8,7 @@ export type TestCase = {
   status?: "error" | "success" | "in_progress" | "open";
   description?: string;
   attachment: string | null;
-  severity:
+  severity?:
     | "not_set"
     | "blocker"
     | "critical"

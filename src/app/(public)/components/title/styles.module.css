@@ -21,6 +21,8 @@
 .buttonContainer{
   margin-right: 50px;
   background-color: #004d94;
+  position: relative;
+  z-index: 0;
 }
 
 .buttonContainer:hover{

@@ -1,6 +1,6 @@
 import { TestCase } from "@/types/models";
 import { renderStatusLabel } from "@/utils/renderStatusLabel";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "react-beautiful-dnd";
 import { CaseCard } from "../card/case";
 import styles from "./styles.module.css";
@@ -19,8 +19,11 @@ export function Board({ initialCases }: BoardProps) {
     cases[result.destination.droppableId].splice(result.destination.index, 0, itemMoved);
 
     setCases(cases);
-
   };
+
+  useEffect(()=>{
+    setCases(initialCases);
+  }, [initialCases])
 
   return (
     <div className={styles.container}>
@@ -35,13 +38,10 @@ export function Board({ initialCases }: BoardProps) {
               {(provided, snapshot) => {
                 return (
                   <div className={snapshot.isDraggingOver ? styles.draggableContainerFlow : styles.draggableContainerBase} ref={provided.innerRef} {...provided.droppableProps}>
-                    {cases[status]?.map((testCase, index) => (
-                      <Draggable
-                        key={testCase.id}
-                        draggableId={testCase.id.toString()}
-                        index={index}
-                      >
-                        {(provided) =>  (
+                    {cases[status]?.map((testCase, index) =>{
+                      return (
+                        <Draggable key={testCase.id} draggableId={testCase.id.toString()} index={index}>
+                          {(provided) => (
                             <div
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
@@ -50,10 +50,10 @@ export function Board({ initialCases }: BoardProps) {
                             >
                               <CaseCard key={testCase.id} onClick={()=>{console.log('Teste')}} testCase={testCase}/>
                             </div>
-                          )
-                        }
-                      </Draggable>
-                    ))}
+                          )}
+                        </Draggable>
+                      )
+                    })}
                     {provided.placeholder}
                   </div>
                 )

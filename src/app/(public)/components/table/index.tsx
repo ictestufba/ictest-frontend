@@ -16,7 +16,6 @@ function getTeamColumnsType():TableProps<TeamDataType>['columns']{
       title: 'Nome',
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <a>{text}</a>,
     },
     {
       title: 'Departamento',
@@ -62,7 +61,6 @@ function getProjectColumnsType():TableProps<ProjectDataType>['columns']{
       title: 'Nome',
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <a>{text}</a>,
     },
     {
       title: 'Código',
@@ -97,9 +95,10 @@ type props = {
   data: TeamDataType[] | ProjectDataType[];
   pagination: TableProps<any>["pagination"];
   onChange: TableProps<any>["onChange"];
+  onRowClick: (id:string)=>void;
 }
 
-export function TableList({columnType, data, pagination, onChange}:props) {
+export function TableList({columnType, data, pagination, onChange, onRowClick}:props) {
   if (columnType === "teams") {
     return (
       <Table 
@@ -107,6 +106,11 @@ export function TableList({columnType, data, pagination, onChange}:props) {
         dataSource={data as TeamDataType[]} 
         pagination={pagination}
         onChange={onChange}
+        onRow={(record) => {
+          return {
+            onClick: () => onRowClick(record.key),
+          };
+        }}
       />
     );
   }
@@ -117,6 +121,11 @@ export function TableList({columnType, data, pagination, onChange}:props) {
       dataSource={data} 
       pagination={pagination}
       onChange={onChange}
+      onRow={(record) => {
+        return {
+          onClick: () => onRowClick(record.key),
+        };
+      }}
     />
   );
 };
