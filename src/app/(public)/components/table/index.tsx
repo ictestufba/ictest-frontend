@@ -1,6 +1,8 @@
 import type { TableProps } from 'antd';
 import { Table, Tag } from 'antd';
 import { NavbarOption } from '../navbar';
+import styles from "./styles.module.css";
+
 
 export interface TeamDataType {
   key: string;
@@ -106,6 +108,7 @@ export function TableList({columnType, data, pagination, onChange, onRowClick}:p
         dataSource={data as TeamDataType[]} 
         pagination={pagination}
         onChange={onChange}
+        rowClassName={styles.row}
         onRow={(record) => {
           return {
             onClick: () => onRowClick(record.key),
@@ -121,6 +124,7 @@ export function TableList({columnType, data, pagination, onChange, onRowClick}:p
       dataSource={data} 
       pagination={pagination}
       onChange={onChange}
+      rowClassName={styles.row}
       onRow={(record) => {
         return {
           onClick: () => onRowClick(record.key),

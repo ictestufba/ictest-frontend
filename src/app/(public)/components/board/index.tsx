@@ -1,3 +1,4 @@
+import { api } from "@/lib/api";
 import { TestCase } from "@/types/models";
 import { renderStatusLabel } from "@/utils/renderStatusLabel";
 import { useEffect, useState } from "react";
@@ -9,13 +10,23 @@ type BoardProps = {
   initialCases: {
     [key: string]: TestCase[];
   };
+  onCardClick: (testCase: TestCase)=>void;
 }
 
-export function Board({ initialCases }: BoardProps) {
+export function Board({ initialCases, onCardClick }: BoardProps) {
   const [cases, setCases] = useState(initialCases);
   const onDragEnd: OnDragEndResponder = (result) => {
     if (!result.destination) return;
     const [ itemMoved ] = cases[result.source.droppableId].splice(result.source.index, 1);
+
+    if (itemMoved.status !== result.destination.droppableId) {
+      itemMoved.status = result.destination.droppableId as TestCase["status"];
+      api.patch(`/test-cases/${itemMoved.id}/update`, {
+        data: {
+          ...itemMoved,
+        },
+      }).then(()=> console.log("success"));
+    }
     cases[result.destination.droppableId].splice(result.destination.index, 0, itemMoved);
 
     setCases(cases);
@@ -48,7 +59,7 @@ export function Board({ initialCases }: BoardProps) {
                               ref={provided.innerRef}
                               className={styles.cardContainer}
                             >
-                              <CaseCard key={testCase.id} onClick={()=>{console.log('Teste')}} testCase={testCase}/>
+                              <CaseCard key={testCase.id} onClick={()=>{onCardClick(testCase)}} testCase={testCase}/>
                             </div>
                           )}
                         </Draggable>

@@ -1,0 +1,27 @@
+.container{
+  margin-left: 50px;
+  width: 80%;
+}
+
+.inputContainer {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.contentContainerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buttonContainer{
+  margin-left: 20px;
+  background-color: #004d94;
+  position: relative;
+  z-index: 0;
+}
+
+.buttonContainer:hover{
+  background-color: #006fd6 !important;
+}

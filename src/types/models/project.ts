@@ -1,3 +1,4 @@
+import { TestCase } from "./test-case";
 import { User } from "./user";
 
 export type Project = {
@@ -10,4 +11,6 @@ export type Project = {
   created_at: string;
   updated_at: string;
   members: User[];
+  test_cases: TestCase[];
 };
+

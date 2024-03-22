@@ -1,7 +1,7 @@
 .container{
   width: 100vw;
   height: 90vh;
-  padding: 40px;
+  padding: 0 40px 40px 40px;
   display: flex;
   justify-content: space-evenly;
   flex-flow: row wrap;

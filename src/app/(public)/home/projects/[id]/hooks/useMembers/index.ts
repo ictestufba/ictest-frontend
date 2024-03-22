@@ -1,30 +1,24 @@
 import { api } from "@/lib/api";
 import { getToken } from "@/lib/auth";
-import { Project, User } from "@/types/models";
+import { User } from "@/types/models";
 import { parseJWT } from "@/utils/parse-jwt";
-import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import useSwr from "swr";
 
-export function useMembers(projectId: string) {
-  const { data: project } = useSwr<Project>(`/project/${projectId}`);
 
-  const members = project?.members;
+export function useMembers(projectId: string | null) {
+  const router = useRouter();
 
-  const currentUser = useMemo(() => {
-    const token = getToken();
-    if (!token) throw new Error();
+  const token = getToken();
+  if (!token){
+    router.push('/login')
+  } 
 
-    const currentUserData = parseJWT(token);
-    const currentUserId = currentUserData.sub;
-    const member = members?.find((member) => member.id === currentUserId);
-
-    return member;
-  }, [members]);
-
-  const isAdmin = currentUser?.role === "admin";
+  const currentUserData = parseJWT(token!);
+  const currentUserId = currentUserData.sub;
 
   const { data, isLoading, mutate } = useSwr<User[]>(
-    `/project/${projectId}/members`,
+    projectId ? `/project/${projectId}/members` : null,
     async () => {
       const response = await api.get<{
         users: User[];
@@ -36,6 +30,7 @@ export function useMembers(projectId: string) {
 
   return {
     data,
+    currentUserId,
     isLoading,
     mutate,
     isAdmin: true,

@@ -3,4 +3,5 @@ export type User = {
   name: string;
   id: string;
   role: "admin" | "member";
+  user_id: string;
 };

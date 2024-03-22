@@ -85,8 +85,7 @@ export default function Home() {
                   <ModelCard 
                     key={teams.id}
                     id={teams.id} 
-                    title={teams.name} 
-                    description={`Responsável: ${teams.owner.name}`} 
+                    title={teams.name}  
                     bottomText={`Número de membros: ${teams.members.length}`} 
                     onClick={()=>console.log("clicked")}
                   />
@@ -106,9 +105,8 @@ export default function Home() {
                       key={project.id}
                       id={project.id} 
                       title={project.name} 
-                      description={`Responsável: ${project.members[0].name}`} 
-                      bottomText={`Número de casos: ${project.members.length}`} 
-                      onClick={()=>console.log("clicked")}
+                      bottomText={`Número de casos: ${project?.test_cases?.length ?? 0}`} 
+                      onClick={()=>redirect(project.id)}
                     />
                   ))
                 ) : (

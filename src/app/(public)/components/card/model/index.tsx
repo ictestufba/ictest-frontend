@@ -6,7 +6,7 @@ const { Meta } = Card;
 type props = {
   id: string
   title:string;
-  description:string;
+  description?:string;
   bottomText:string;
   onClick: () => void;
 };
