@@ -1,5 +1,6 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
+import { useMembers } from "../../home/projects/[id]/hooks/useMembers";
 import styles from "./styles.module.css";
 
 type props = {
@@ -7,16 +8,19 @@ type props = {
   divider?: boolean;
   newBtn?: boolean
   onClick?: () => void;
+  projectId?: string;
 };
 
-export function CustomTitle({ text, divider, newBtn, onClick }:props) {
+export function CustomTitle({ text, divider, newBtn, onClick, projectId }:props) {
+  const { data: users, currentUserId } = useMembers(projectId ?? null)
+
   return (
     <div className={styles.container}>
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>{text}</h1>
           {
             newBtn ? (
-              <Button onClick={onClick} className={styles.buttonContainer} type="primary" shape="round" icon={<PlusCircleOutlined />}>Criar</Button>
+              <Button onClick={onClick} disabled={users?.some(user=>user.user_id === currentUserId)} className={styles.buttonContainer} type="primary" shape="round" icon={<PlusCircleOutlined />}>Criar</Button>
             ): <></>
           }
         </div>

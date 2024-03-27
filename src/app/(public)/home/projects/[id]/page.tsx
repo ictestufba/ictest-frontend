@@ -100,7 +100,7 @@ export default function Case({
           </div>
         ): (
           <>
-            <CustomTitle text={project?.name!} divider newBtn onClick={showCreateDrawer}/>
+            <CustomTitle text={project?.name!} divider newBtn onClick={showCreateDrawer} projectId={params.id}/>
             <Tabs
               className={styles.tabsContainer}
               defaultActiveKey={"test-cases"}
