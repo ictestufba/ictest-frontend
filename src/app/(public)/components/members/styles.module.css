@@ -9,6 +9,10 @@
   margin-bottom: 16px;
 }
 
+.select{
+  width: 100%;
+}
+
 .contentContainerHeader {
   display: flex;
   align-items: center;

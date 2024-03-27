@@ -4,4 +4,5 @@ export type User = {
   id: string;
   role: "admin" | "member";
   user_id: string;
+  user?: User;
 };

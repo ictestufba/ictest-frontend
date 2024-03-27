@@ -48,12 +48,10 @@ export interface ProjectDataType {
 function getProjectColumnsType():TableProps<ProjectDataType>['columns']{
   const getStatusColor = (status:string) =>{
     switch(status.toUpperCase()){
-      case "RUNNING":
+      case "FINALIZADO":
         return "success";
-      case "PAUSED":
+      case "EM PROGRESSO":
         return "processing";
-      case "CANCELED":
-        return "error"
       default:
         return "default";
     }

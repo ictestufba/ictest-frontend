@@ -1,33 +1,41 @@
 "use client";
 
 import { api } from "@/lib/api";
-import { Avatar, Button, Form, Input, List, Spin, message } from "antd";
+import { Avatar, Button, Form, List, Select, Spin, message } from "antd";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
 import styles from "./styles.module.css";
 
+import { User } from "@/types/models";
+import { CrownOutlined, DeleteFilled } from "@ant-design/icons";
 import { useMembers } from "../../home/projects/[id]/hooks/useMembers";
 
 type MembersProps = {
   projectId: string;
+  usersOptions: User[];
+  email: string;
+  handleEmailChange: (value:string)=>void;
 }
 
 export function Members(props: MembersProps) {
   const {
     projectId,
+    usersOptions,
+    email,
+    handleEmailChange,
   } = props;
 
   const { mutate: globalMutate } = useSWRConfig();
-
   const [openCreate, setOpenCreate] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const [email, setEmail] = useState<string>();
   const [form] = Form.useForm();
 
   const {
     data: users,
     isLoading: usersIsLoading,
     mutate,
+    currentUserId,
+    isAdmin,
   } = useMembers(projectId);
 
   const addUser = async () => {
@@ -35,7 +43,7 @@ export function Members(props: MembersProps) {
       await api.patch(`/projects/${projectId}/add-member`, {
         userEmail: email,
       });
-      setEmail("");
+      handleEmailChange("");
       mutate();
       message.success("Usuário adicionado com sucesso");
     } catch (error) {
@@ -48,7 +56,7 @@ export function Members(props: MembersProps) {
   async function removeMember(id: string) {
     await api.delete(`/projects/${projectId}/remove-member`, {
       data: {
-        id,
+        userId:id,
       },
     });
     mutate();
@@ -61,11 +69,22 @@ export function Members(props: MembersProps) {
       {contextHolder}
       <div className={styles.inputContainer}>
         {
-          <Input
+          <Select
             placeholder="Digite o e-mail do usuário para adicionar"
+            onChange={handleEmailChange}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+            showSearch
+            className={styles.select}
+            disabled={!isAdmin}
+          >
+            {usersOptions?.map((user) => {
+              return (
+                <Select.Option key={user.id} value={user.email}>
+                  {user.email}
+                </Select.Option>
+              )
+            })}
+          </Select>
         }
         <Button onClick={addUser} type="primary" className={styles.buttonContainer}>
           Adicionar usuário
@@ -80,6 +99,9 @@ export function Members(props: MembersProps) {
         dataSource={users}
         renderItem={(item, index) => (
           <List.Item>
+            {
+              currentUserId !== undefined && isAdmin && currentUserId === item.id && <CrownOutlined />
+            }
             <List.Item.Meta
               avatar={
                 <Avatar
@@ -89,6 +111,14 @@ export function Members(props: MembersProps) {
               title={item.email}
               description={item.name}
             />
+            {
+              currentUserId !== undefined && isAdmin && currentUserId !== item.id && (
+                <Button danger onClick={() => removeMember(item.id)}>
+                  <DeleteFilled />
+                </Button>
+              )
+            }
+            
           </List.Item>
         )}
       />

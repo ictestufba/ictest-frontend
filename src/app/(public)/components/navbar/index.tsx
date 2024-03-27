@@ -1,5 +1,5 @@
 import { removeToken } from "@/lib/auth";
-import { LogoutOutlined, MenuOutlined, ProjectOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { LogoutOutlined, MenuOutlined, ProjectOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Button, Drawer, Layout } from "antd";
 import { useRouter } from "next/navigation";
@@ -44,13 +44,13 @@ export function Navbar({ selectedOption, onClick }:props) {
 
   const menuItems: { left: MenuProps['items'], right: MenuProps['items'] } = {
     left: [
-      {
-        label: 'Times',
-        key: 'teams',
-        icon: <TeamOutlined />,
-        className: styles.menuItem,
-        onClick: () => {},
-      },
+      // {
+      //   label: 'Times',
+      //   key: 'teams',
+      //   icon: <TeamOutlined />,
+      //   className: styles.menuItem,
+      //   onClick: () => {},
+      // },
       {
         label: 'Projetos',
         key: 'projects',

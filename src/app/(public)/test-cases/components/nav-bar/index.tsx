@@ -56,7 +56,7 @@ export function NavBar() {
     return projects.map((project, index) => {
       const projectTestCases = testCases?.[project.id] ?? [];
 
-      const children = projectTestCases.map((testCase) => ({
+      const children = projectTestCases?.map((testCase) => ({
         key: testCase.id,
         icon: React.createElement(AuditOutlined),
         label: testCase.title,

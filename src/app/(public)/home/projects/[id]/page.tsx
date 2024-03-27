@@ -12,7 +12,7 @@ import { Members } from "@/app/(public)/components/members";
 import { CreateCaseModal } from "@/app/(public)/components/modal/case/create";
 import { EditCaseModal } from "@/app/(public)/components/modal/case/edit";
 import { TestCase } from "@/types/models";
-import { useMembers } from "./hooks/useMembers";
+import { useUsers } from "./hooks/useUsers";
 
 export default function Case({
   params,
@@ -22,9 +22,9 @@ export default function Case({
   const [activeTab, setActiveTab] = useState<"test-cases" | "users">();
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
+  const [email, setEmail] = useState<string>("");
   const [testCaseToEdit, setTestCaseToEdit] = useState<TestCase>();
   const {project, isLoading: isProjectLoading} = useProject(params.id);
-  const { isAdmin } = useMembers(params.id);
   const {testCases, isLoading: isCasesLoading, mutate } = useTestCases(params.id);
   const getCasesByStatus = (status: TestCase["status"]) => {
     const filtered = testCases?.filter(testCase => testCase?.status === status) ?? [];
@@ -46,6 +46,13 @@ export default function Case({
         return indexA - indexB;
       });
   }
+
+  const {data:users, mutate:mutateUsers} = useUsers(email, project?.members?.map(member=>member.user_id) ?? [])
+
+  const handleEmailChange = (newValue: string) => {
+    setEmail(newValue);
+    mutateUsers();
+  };
 
   const showCreateDrawer = () => {
     setOpenCreate(true);
@@ -119,9 +126,8 @@ export default function Case({
                 },
                 {
                   key: "users",
-                  children: <Members projectId={params.id} />,
+                  children: <Members projectId={params.id} usersOptions={users ?? []} handleEmailChange={handleEmailChange} email={email}/>,
                   label: "Membros",
-                  disabled: !isAdmin,
                 },
               ]}
               onChange={(key) => setActiveTab(key as "test-cases" | "users")}

@@ -2,6 +2,7 @@
 
 import { Project } from "@/types/models";
 import { Team } from "@/types/models/team";
+import { mapProjectStatus } from "@/utils/mapProjectStatus";
 import { Spin } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -85,7 +86,7 @@ export default function Home() {
                   <ModelCard 
                     key={teams.id}
                     id={teams.id} 
-                    title={teams.name}  
+                    title={teams.name}
                     bottomText={`Número de membros: ${teams.members.length}`} 
                     onClick={()=>console.log("clicked")}
                   />
@@ -105,6 +106,7 @@ export default function Home() {
                       key={project.id}
                       id={project.id} 
                       title={project.name} 
+                      description={`Responsável: ${project.members.find(member=>member.role === "admin")?.name ?? "Desconhecido"}`}
                       bottomText={`Número de casos: ${project?.test_cases?.length ?? 0}`} 
                       onClick={()=>redirect(project.id)}
                     />
@@ -163,11 +165,15 @@ function mapTeamsToTeamsDataType(teams: Team[], searchString: string): TeamDataT
 }
 
 function mapProjectsToProjectsDataType(projects: Project[], searchString: string): ProjectDataType[] {
-  return projects.filter(item=>item.name.toLowerCase().includes(searchString.toLowerCase())).map(project=>({
-    key: project.id,
-    name: project.name,
-    code: project.code,
-    status: "created",
-    responsible: "responsible 1"
-  }));
+  return projects.filter(item=>item.name.toLowerCase().includes(searchString.toLowerCase())).map(project=>{
+    const responsible = project?.members?.find(member=>member.role === "admin");
+
+    return {
+      key: project.id,
+      name: project.name,
+      code: project.code,
+      status: mapProjectStatus(project?.test_cases ?? []),
+      responsible: responsible?.name ?? "Desconhecido"
+    }
+  });
 }

@@ -1,1 +1,1 @@
-export const defaultNavbarOption = "teams";
+export const defaultNavbarOption = "projects";

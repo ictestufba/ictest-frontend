@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import useSwr, { useSWRConfig } from "swr";
-import { Spin } from "antd";
-import { Col, Row, Button, Form, Input } from "antd";
-import styles from "./page.module.css";
-import { TestCase } from "@/types/models";
 import { api } from "@/lib/api";
+import { TestCase } from "@/types/models";
+import { Button, Col, Form, Input, Row, Spin } from "antd";
+import { useMemo, useState } from "react";
+import useSwr, { useSWRConfig } from "swr";
+import styles from "./page.module.css";
 
 const { Search } = Input;
 
-import { TestCasesProps } from "./types";
-import { TestCaseCard } from "../test-case-card";
-import { EditModal } from "../edit-modal";
 import { CreateModal } from "../create-modal";
+import { EditModal } from "../edit-modal";
+import { TestCaseCard } from "../test-case-card";
+import { TestCasesProps } from "./types";
 
 import emptyImg from "./techny-searching-the-web-on-tablet.gif";
 
@@ -103,7 +102,7 @@ export function TestCases(props: TestCasesProps) {
     if (!filterdTestCases?.length)
       return <Col span={12}>Nenhum caso de teste encontrado</Col>;
 
-    return filterdTestCases.map((testCase) => (
+    return filterdTestCases?.map((testCase) => (
       <Col span={8} key={testCase.id}>
         <TestCaseCard onClick={handleTestCaseCardClick} testCase={testCase} />
       </Col>
