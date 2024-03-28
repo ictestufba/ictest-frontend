@@ -2,23 +2,18 @@ import { api } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import { Project, User } from "@/types/models";
 import { parseJWT } from "@/utils/parse-jwt";
-import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import useSwr from "swr";
 
 
 export function useMembers(projectId: string | null) {
-  const router = useRouter();
-
-  const { data: project } = useSwr<Project>(`/projects/${projectId}`);
+  const { data: project } = useSwr<Project>(projectId ? `/projects/${projectId}`: null);
 
   const members = project?.members;
 
   const currentUser = useMemo(() => {
     const token = getToken();
     if (!token){
-      router.push('/login')
-
       return;
     };
 
@@ -28,12 +23,12 @@ export function useMembers(projectId: string | null) {
     const member = members?.find((member) => member.user_id === currentUserId);
 
     return member;
-  }, [members, router]);
+  }, [members]);
 
   const isAdmin = currentUser?.role === "admin";
 
   const { data, isLoading, mutate } = useSwr<User[]>(
-    `/project/${projectId}/members`,
+    projectId ? `/project/${projectId}/members` : null,
     async () => {
       const response = await api.get<{
         users: User[];
@@ -49,5 +44,6 @@ export function useMembers(projectId: string | null) {
     isLoading,
     mutate,
     isAdmin,
+    adminId: members?.find((member) => member.role === "admin")?.user_id,
   };
 }

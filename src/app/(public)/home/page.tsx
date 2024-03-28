@@ -20,6 +20,7 @@ import { NavbarCtx } from "./template";
 
 
 export default function Home() {
+  const [isPageLoading, setIsPageLoading] = useState(false);
   const [openCreate, setOpenCreate] = useState(false);
   const [searchString, setSearchString] = useState("");
   let { selectedOption } = useContext(NavbarCtx);
@@ -31,6 +32,7 @@ export default function Home() {
   const isTeamOption = selectedOption === "teams";
 
   const redirect = (id:string) => {
+    setIsPageLoading(true);
     if(isTeamOption){
       return router.push(`/home/teams/${id}`)
     }
@@ -72,6 +74,7 @@ export default function Home() {
 
   const title = isTeamOption ? "Times" : "Projetos";
   return (
+    <Spin spinning={isPageLoading} tip="carregando...">
     <div className={styles.container}>
       {openCreate && openCreateModal()}
       <CustomTitle text={`Meus ${title}`} divider newBtn onClick={showCreateDrawer}/>
@@ -151,6 +154,7 @@ export default function Home() {
         }
       </div>
     </div>
+    </Spin>
   );
 }
 

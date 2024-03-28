@@ -1,6 +1,6 @@
 import { api } from "@/lib/api";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input, message } from "antd";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message } from "antd";
 
 type Data = {
   email: string;
@@ -8,7 +8,12 @@ type Data = {
   name: string;
 };
 
-export function Register() {
+type Props = {
+  onSuccess: () => void;
+  setIsLoading: (value: boolean) => void;
+};
+
+export function Register({onSuccess,setIsLoading}:Props) {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -18,14 +23,13 @@ export function Register() {
 
       const payload = { email, password, name };
 
+      setIsLoading(true);
       await api.post("/users", JSON.stringify(payload));
-
-      messageApi.success(
-        "Cadastro feito com sucesso, faça login para acessar sua conta"
-      );
-
+      
       form.resetFields();
+      onSuccess();
     } catch (error) {
+      setIsLoading(false);
       console.error(error);
       messageApi.error(
         "Ocorreu um erro não esperado ao cadastrar sua conta, tente novamente mais tarde"

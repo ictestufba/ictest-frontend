@@ -14,9 +14,10 @@ export type NavbarOption = "teams" | "projects";
 type props = {
   selectedOption: NavbarOption;
   onClick: MenuProps['onClick'];
+  setIsPageLoading: (value:boolean)=>void;
 };
 
-export function Navbar({ selectedOption, onClick }:props) {
+export function Navbar({ selectedOption, onClick, setIsPageLoading }:props) {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const showDrawer = () => {
@@ -38,6 +39,8 @@ export function Navbar({ selectedOption, onClick }:props) {
   }, []); // Empty dependency array means this effect runs once on mount
 
   const onLogout=() => {
+    setIsPageLoading(true);
+
     removeToken();
     router.push("/login");
   }

@@ -36,6 +36,7 @@ export function Members(props: MembersProps) {
     mutate,
     currentUserId,
     isAdmin,
+    adminId
   } = useMembers(projectId);
 
   const addUser = async () => {
@@ -45,10 +46,10 @@ export function Members(props: MembersProps) {
       });
       handleEmailChange("");
       mutate();
-      message.success("Usuário adicionado com sucesso");
+      messageApi.success("Usuário adicionado com sucesso");
     } catch (error) {
       console.error(error);
-      message.error("Ocorreu um erro ao adicionar usuário");
+      messageApi.error("Ocorreu um erro ao adicionar usuário");
     }
   };
 
@@ -86,7 +87,7 @@ export function Members(props: MembersProps) {
             })}
           </Select>
         }
-        <Button onClick={addUser} type="primary" className={styles.buttonContainer}>
+        <Button disabled={!isAdmin} onClick={addUser} type="primary" className={styles.buttonContainer}>
           Adicionar usuário
         </Button>
       </div>
@@ -100,7 +101,7 @@ export function Members(props: MembersProps) {
         renderItem={(item, index) => (
           <List.Item>
             {
-              currentUserId !== undefined && isAdmin && currentUserId === item.id && <CrownOutlined />
+              !usersIsLoading && adminId === item.id && <CrownOutlined />
             }
             <List.Item.Meta
               avatar={
@@ -112,7 +113,7 @@ export function Members(props: MembersProps) {
               description={item.name}
             />
             {
-              currentUserId !== undefined && isAdmin && currentUserId !== item.id && (
+              !usersIsLoading && isAdmin && currentUserId !== item.id && (
                 <Button danger onClick={() => removeMember(item.id)}>
                   <DeleteFilled />
                 </Button>

@@ -3,6 +3,7 @@ import { TestCase } from "@/types/models";
 import { renderStatusLabel } from "@/utils/renderStatusLabel";
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "react-beautiful-dnd";
+import { useMembers } from "../../home/projects/[id]/hooks/useMembers";
 import { CaseCard } from "../card/case";
 import styles from "./styles.module.css";
 
@@ -11,11 +12,16 @@ type BoardProps = {
     [key: string]: TestCase[];
   };
   onCardClick: (testCase: TestCase)=>void;
+  projectId: string;
 }
 
-export function Board({ initialCases, onCardClick }: BoardProps) {
+export function Board({ initialCases, onCardClick , projectId}: BoardProps) {
+  const {data:users, currentUserId, isLoading} = useMembers(projectId)
+  const isMember = !isLoading && (users?.find(user=>user.id === currentUserId) !== undefined);
+
   const [cases, setCases] = useState(initialCases);
   const onDragEnd: OnDragEndResponder = (result) => {
+    if (!isMember) return;
     if (!result.destination) return;
     const [ itemMoved ] = cases[result.source.droppableId].splice(result.source.index, 1);
 

@@ -114,7 +114,7 @@ export default function Case({
                 {
                   key: "test-cases",
                   children: (
-                    <Board onCardClick={showEditDrawer} initialCases={{
+                    <Board projectId={params.id} onCardClick={showEditDrawer} initialCases={{
                       "open": getCasesByStatus("open"),
                       "in_progress": getCasesByStatus("in_progress"),
                       "error": getCasesByStatus("error"),

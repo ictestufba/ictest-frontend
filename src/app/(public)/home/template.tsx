@@ -1,10 +1,12 @@
 "use client";
 
+import { isLoggedIn } from "@/lib/auth";
 import type { MenuProps } from "antd";
 import {
-  Layout
+  Layout, Spin
 } from "antd";
-import React, { createContext, useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { createContext, useEffect, useState } from "react";
 import { Navbar, NavbarOption } from "../components/navbar";
 import { defaultNavbarOption } from "./constants";
 import styles from "./styles.module.css";
@@ -20,21 +22,35 @@ export const NavbarCtx = createContext<{
 export default function HomeTemplate({
   children,
 }: React.PropsWithChildren) {
+  const router = useRouter();
+  const [isPageLoading, setIsPageLoading] = useState(false);
+
   const [selectedOption, setSelectedOption] = useState<NavbarOption>(defaultNavbarOption);
   const onClick: MenuProps['onClick'] = (e) => {
     setSelectedOption(e.key as NavbarOption);
   };
+  
+  useEffect(() => {
+    const loggedIn = isLoggedIn()
+
+    if (!loggedIn){
+      router.push("/login");
+    }
+  }, [router]);
 
   return (
     <main>
       <Layout>
-        <Navbar selectedOption={selectedOption} onClick={onClick} />
+      <Spin spinning={isPageLoading} tip="carregando...">
+        <Navbar selectedOption={selectedOption} onClick={onClick} setIsPageLoading={setIsPageLoading}/>
         <Layout.Content className={styles.layoutContent}>
           <NavbarCtx.Provider value={{selectedOption, setSelectedOption}}>
             {children}
           </NavbarCtx.Provider>
         </Layout.Content>
+        </Spin>
       </Layout>
+
     </main>
   );
 }

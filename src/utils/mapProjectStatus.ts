@@ -10,7 +10,7 @@ export function mapProjectStatus(cases: TestCase[]) {
     if (status === "open") openCount++;
     if (status === "success") successCount++;
   }
-  console.log(openCount, successCount, cases.length, cases)
+
   if (openCount === cases.length) {
     return "Criado";
   }

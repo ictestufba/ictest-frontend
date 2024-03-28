@@ -11,9 +11,10 @@ type Data = {
 
 type Props = {
   onSuccess: () => void;
+  setIsLoading: (value: boolean) => void;
 };
 
-export function Login({ onSuccess }: Props) {
+export function Login({ onSuccess, setIsLoading }: Props) {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -25,7 +26,7 @@ export function Login({ onSuccess }: Props) {
         email,
         password,
       };
-
+      setIsLoading(true);
       const response = await api.post<{ token: string }>(
         "/sessions",
         JSON.stringify(payload)
@@ -36,6 +37,8 @@ export function Login({ onSuccess }: Props) {
       onSuccess();
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
+
       messageApi.error(
         "Não foi possível realizar login, tente novamente mais tarde"
       );
