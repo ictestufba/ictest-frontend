@@ -18,14 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     container: node:18-alpine
     steps:
-      - uses: actions/checkout@4
+      - uses: actions/checkout@v4
       - name: Audit The Dependencies
         run: npm audit
   build:
     runs-on: ubuntu-latest
     container: node:18-alpine
     steps:
-      - uses: actions/checkout@4
+      - uses: actions/checkout@v4
       - name: Install Dependencies
         run: npm ci --legacy-peer-deps
       - name: Check the next lint
