@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { api } from "@/lib/api";
 import { TestCase } from "@/types/models";
 import { renderPriorityLabel } from "@/utils/renderPriorityLabel";
