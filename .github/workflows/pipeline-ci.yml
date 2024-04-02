@@ -48,6 +48,7 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.ICTEST_API_URL }}
           TARGET_NEXT_PUBLIC_API_URL: preview,development,production
+          TYPE_NEXT_PUBLIC_API_URL: plain 
       - name: deploy site to vercel      
         uses: amondnet/vercel-action@v20
         with:
