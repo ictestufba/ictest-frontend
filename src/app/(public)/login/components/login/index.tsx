@@ -40,7 +40,7 @@ export function Login({ onSuccess, setIsLoading }: Props) {
       setIsLoading(false);
 
       messageApi.error(
-        "Não foi possível realizar login, tente novamente mais tarde"
+        "Não foi possível realizar login, tente novamente mais tarde!"
       );
     }
   }
