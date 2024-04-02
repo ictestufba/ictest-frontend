@@ -1,0 +1,15 @@
+.container {
+  background-color: black;
+  margin: 20px;
+  padding-left: 20px;
+  min-width: 300px;
+  width: 20%;
+  border-radius: 10px 12px 12px 10px;
+}
+
+.card{
+  border-radius: 0 10px 10px 0;
+}
+
+
+

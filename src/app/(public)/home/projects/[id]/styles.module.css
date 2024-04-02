@@ -1,0 +1,16 @@
+.container{
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+
+.spinContainer{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 50px;
+}
+
+.tabsContainer{
+}

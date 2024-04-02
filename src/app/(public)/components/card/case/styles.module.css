@@ -1,0 +1,77 @@
+.container {
+  margin: 20px;
+  min-width: 300px;
+  width: 100%;
+  border-radius: 10px 10px 10px 10px;
+}
+
+.avatarContainer {
+  padding-top: 8px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.statusContainer p {
+  margin: 0;
+}
+
+.statusContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width:100%;
+  margin: 0 10px 10px 0;
+}
+
+.contentContainerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.successTestCard {
+  background-color: rgba(82, 196, 26, 0.2);
+  cursor: pointer;
+}
+
+.successTestCard .status {
+  background: #52c41a;
+}
+
+.failTestCard {
+  background-color: rgba(245, 34, 45, 0.2);
+  cursor: pointer;
+}
+
+.failTestCard .status {
+  background: #ff4d4f;
+}
+
+.onProgressTestCard {
+  background-color: rgba(255, 176, 24, 0.2);
+  cursor: pointer;
+}
+
+.onProgressTestCard .status {
+  background: #ffb018;
+}
+
+.openTestCard {
+  background-color: rgba(201, 201, 201, 0.2);
+}
+
+.openTestCard .status {
+  background: #c9c9c9;
+}
+
+.testContent {
+  display: flex;
+  flex-direction: column;
+}
