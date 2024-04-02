@@ -23,6 +23,7 @@ export default function Case({
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [email, setEmail] = useState<string>("");
+  const [searchEmail, setSearchEmail] = useState("");
   const [testCaseToEdit, setTestCaseToEdit] = useState<TestCase>();
   const {project, isLoading: isProjectLoading} = useProject(params.id);
   const {testCases, isLoading: isCasesLoading, mutate } = useTestCases(params.id);
@@ -53,7 +54,7 @@ export default function Case({
     setEmail(newValue);
     mutateUsers();
   };
-
+  
   const showCreateDrawer = () => {
     setOpenCreate(true);
   };
@@ -66,7 +67,7 @@ export default function Case({
     setOpenEdit(true);
     setTestCaseToEdit(testCase);
   }
-
+ 
   return (
     <div className={styles.container}>
       { openEdit && testCaseToEdit  && (

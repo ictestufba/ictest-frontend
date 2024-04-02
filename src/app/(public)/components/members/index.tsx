@@ -13,7 +13,7 @@ import { useMembers } from "../../home/projects/[id]/hooks/useMembers";
 type MembersProps = {
   projectId: string;
   usersOptions: User[];
-  email: string;
+  email: string | null;
   handleEmailChange: (value:string)=>void;
 }
 
@@ -24,7 +24,7 @@ export function Members(props: MembersProps) {
     email,
     handleEmailChange,
   } = props;
-
+  console.log("options", usersOptions)
   const { mutate: globalMutate } = useSWRConfig();
   const [openCreate, setOpenCreate] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -61,7 +61,9 @@ export function Members(props: MembersProps) {
       },
     });
     mutate();
+    globalMutate("/users")
   }
+  globalMutate("/users")
 
   if (usersIsLoading) return <Spin />;
 

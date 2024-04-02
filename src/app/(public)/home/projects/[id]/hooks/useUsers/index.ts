@@ -14,13 +14,13 @@ export function useUsers(email: string, filterIds:string[] = []) {
           email
         }
       });
-
+      console.log( response.data.users, email, "email")
       return response.data.users;
     }
   );
 
   let filteredData = data;
-
+  
   if (!isLoading && filterIds.length > 0) {
     filteredData = data?.filter((user) => {
       return !filterIds.includes(user.id);
