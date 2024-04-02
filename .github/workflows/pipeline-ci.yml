@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     container: node:18-alpine
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Install Dependencies
         run: npm ci --legacy-peer-deps
       - name: Check the next lint
@@ -18,14 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     container: node:18-alpine
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Audit The Dependencies
         run: npm audit
   build:
     runs-on: ubuntu-latest
     container: node:18-alpine
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Install Dependencies
         run: npm ci --legacy-peer-deps
       - name: Check the next lint
@@ -35,7 +35,7 @@ jobs:
     needs: [lint,build,audit,type_check]
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       - name: Set Env Vars on Vercel Project
         uses: dkershner6/vercel-set-env-action@v1
         with:
