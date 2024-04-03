@@ -16,6 +16,7 @@ type CreateProjectModalProps = {
   onClose: () => void;
   onSubmit?: () => void;
   open: boolean;
+  setIsLoading: (value:boolean) => void;
 };
 
 type Payload = {
@@ -27,7 +28,7 @@ type Payload = {
 };
 
 export function CreateProjectModal(props: CreateProjectModalProps) {
-  const { onClose, open, onSubmit } = props;
+  const { onClose, open, onSubmit, setIsLoading } = props;
 
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
@@ -44,7 +45,7 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
     const token = getToken();
 
     const currentUser = token ? parseJWT(token) : null;
-
+    setIsLoading(true);
     const response = await api.post<{ project: Project }>(`/projects`, {
       ...payload,
       userId: currentUser?.sub,
@@ -55,6 +56,7 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
       response.data.project,
     ]);
     onSubmit?.();
+    setIsLoading(false);
   }
 
   return (

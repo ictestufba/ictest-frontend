@@ -29,6 +29,7 @@ type CreateCaseModalProps = {
   onSubmit?: () => void;
   open: boolean;
   projectId: string;
+  setIsLoading: (value: boolean) => void;
 };
 
 type Payload = {
@@ -42,7 +43,7 @@ type Payload = {
 };
 
 export function CreateCaseModal(props: CreateCaseModalProps) {
-  const { onClose, open, projectId, onSubmit, onError } = props;
+  const { onClose, open, projectId, onSubmit, onError, setIsLoading } = props;
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [image, setImage] = useState<string>();
@@ -65,6 +66,8 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
 
       payload.priority = payload.priority ?? "low";
       payload.severity = payload.severity ?? "minor";
+
+      setIsLoading(true);
       const { data:response } = await api.post<{ test_case: TestCase }>(`/test-cases`, {
         project_id: projectId,
         is_flaky: false,
@@ -84,6 +87,7 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
         response.test_case,
       ]);
       onSubmit?.();
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
       onError?.(error);

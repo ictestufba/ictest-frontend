@@ -19,11 +19,11 @@ export default function Case({
 }: {
   params: { id: string };
 }) {
+  const [isPageLoading, setIsPageLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"test-cases" | "users">();
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [email, setEmail] = useState<string>("");
-  const [searchEmail, setSearchEmail] = useState("");
   const [testCaseToEdit, setTestCaseToEdit] = useState<TestCase>();
   const {project, isLoading: isProjectLoading} = useProject(params.id);
   const {testCases, isLoading: isCasesLoading, mutate } = useTestCases(params.id);
@@ -69,6 +69,7 @@ export default function Case({
   }
  
   return (
+    <Spin spinning={isPageLoading} tip="carregando...">
     <div className={styles.container}>
       { openEdit && testCaseToEdit  && (
         <EditCaseModal
@@ -80,6 +81,7 @@ export default function Case({
           }}
           open={openEdit}
           testCase={testCaseToEdit}
+          setIsLoading={setIsPageLoading}
         />
       )}
       { openCreate && 
@@ -91,6 +93,7 @@ export default function Case({
             }}
             onClose={onCloseCreate}
             open={openCreate}
+            setIsLoading={setIsPageLoading}
           />
         )
       }
@@ -138,5 +141,6 @@ export default function Case({
       }
        
     </div>
+    </Spin>
   );
 }

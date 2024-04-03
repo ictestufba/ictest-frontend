@@ -67,6 +67,7 @@ export default function Home() {
           open={openCreate}
           onClose={onCloseCreate}
           onSubmit={onCloseCreate}
+          setIsLoading={setIsPageLoading}
         />
       )}
     </>

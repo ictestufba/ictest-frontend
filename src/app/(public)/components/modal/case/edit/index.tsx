@@ -29,10 +29,11 @@ type EditCaseModalProps = {
   onOk: () => void;
   onCancel: () => void;
   open: boolean;
+  setIsLoading: (value: boolean) => void;
 };
 
 export function EditCaseModal(props: EditCaseModalProps) {
-  const { testCase, open, onOk, onCancel, onError } = props;
+  const { testCase, open, onOk, onCancel, onError, setIsLoading } = props;
 
   const { data: users } = useMembers(testCase.project_id);
 
@@ -50,6 +51,7 @@ export function EditCaseModal(props: EditCaseModalProps) {
     // @ts-ignore
     const deadline = payload.deadline?.$d?.toISOString?.();
 
+    setIsLoading(true);
     try {
       await api.patch(`/test-cases/${testCase.id}/update`, {
         data: {
@@ -66,6 +68,7 @@ export function EditCaseModal(props: EditCaseModalProps) {
       }
 
       onOk?.();
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
       onError?.(error);
