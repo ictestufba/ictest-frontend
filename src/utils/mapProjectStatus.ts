@@ -4,7 +4,7 @@ export type ProjectStatus = "Criado" | "Em Progresso" | "Finalizado";
 
 export function mapProjectStatus(cases: TestCase[]):ProjectStatus {
   const statusList = cases?.map(testCase=>testCase.status) ?? [];
-  console.log(statusList)
+
   let openCount = 0;
   let successCount = 0;
 
