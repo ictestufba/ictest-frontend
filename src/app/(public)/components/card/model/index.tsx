@@ -1,3 +1,4 @@
+import { ProjectStatus } from '@/utils/mapProjectStatus';
 import { Avatar, Card, Divider } from 'antd';
 import styles from "./styles.module.css";
 
@@ -6,14 +7,27 @@ const { Meta } = Card;
 type props = {
   id: string
   title:string;
+  status?: ProjectStatus;
   description?:string;
   bottomText:string;
   onClick: () => void;
 };
 
-export function ModelCard({id, title, description, bottomText, onClick}:props) {
+export function ModelCard({id, title, description, bottomText, onClick, status}:props) {
+  const getStyleByStatus = () => {
+    switch (status) {
+      case "Criado":
+        return styles.createdContainer;
+      case "Em Progresso":
+        return styles.inProgressContainer;
+      case "Finalizado":
+        return styles.finishedContainer;
+      default:
+        return styles.createdContainer;
+    }
+  }
   return (
-    <div className={styles.container}>
+    <div className={getStyleByStatus()}>
       <Card 
         id={id}
         className={styles.card}

@@ -14,7 +14,6 @@ export function useUsers(email: string, filterIds:string[] = []) {
           email
         }
       });
-      console.log( response.data.users, email, "email")
       return response.data.users;
     }
   );

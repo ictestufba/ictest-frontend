@@ -2,7 +2,7 @@ import { removeToken } from "@/lib/auth";
 import { LogoutOutlined, MenuOutlined, ProjectOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Button, Drawer, Layout } from "antd";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LeftMenu } from "./LeftMenu";
 import { RightMenu } from "./RightMenu";
@@ -19,6 +19,7 @@ type props = {
 
 export function Navbar({ selectedOption, onClick, setIsPageLoading }:props) {
   const router = useRouter();
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const showDrawer = () => {
     setVisible(!visible);
@@ -91,7 +92,13 @@ export function Navbar({ selectedOption, onClick, setIsPageLoading }:props) {
         <Layout.Header className={styles.navHeader}>
           <div className={styles.logo}>
             <h3 className={styles.brandFont}>
-              <a onClick={()=>router.push("/home")}>IC TEST</a>
+              <a onClick={()=>{
+                if (pathname.includes("/home/projects")){
+                  setIsPageLoading(true);
+                }
+                router.push("/home");
+
+              }}>IC TEST</a>
             </h3>
           </div>
           <div className={styles.navbarMenu}>

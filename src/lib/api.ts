@@ -1,6 +1,6 @@
+import { Session } from "@/types/models";
 import axios from "axios";
 import { getToken, removeToken, setToken } from "./auth";
-import { Session } from "@/types/models";
 
 const refreshTokenFn = async () => {
   const currentToken = getToken();
@@ -11,8 +11,6 @@ const refreshTokenFn = async () => {
   }
 
   try {
-    console.log("try");
-
     const response = await api.post<Session>("/user/refresh", {
       refreshToken: currentToken,
     });
@@ -56,11 +54,7 @@ api.interceptors.response.use(
       // config.sent = true;
       // config.sent = false;
 
-      console.log("a");
-
       const token = await refreshTokenFn();
-
-      console.log({ token });
 
       if (token) {
         config.headers = {

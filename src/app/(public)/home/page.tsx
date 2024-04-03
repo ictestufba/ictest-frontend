@@ -113,6 +113,7 @@ export default function Home() {
                       description={`Responsável: ${project.members.find(member=>member.role === "admin")?.name ?? "Desconhecido"}`}
                       bottomText={`Número de casos: ${project?.test_cases?.length ?? 0}`} 
                       onClick={()=>redirect(project.id)}
+                      status={mapProjectStatus(project?.test_cases ?? [])}
                     />
                   ))
                 ) : (
@@ -143,7 +144,7 @@ export default function Home() {
                 columnType={selectedOption!} 
                 data={isTeamOption ? mapTeamsToTeamsDataType(teams, searchString): mapProjectsToProjectsDataType(projects, searchString) } 
                 pagination={{position: ["bottomCenter"], responsive: true}} 
-                onChange={()=>console.log("FOI")}
+                onChange={()=>console.log("changed")}
                 onRowClick={redirect}
               />
             </>

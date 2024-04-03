@@ -1,5 +1,23 @@
-.container {
-  background-color: black;
+.createdContainer{
+  background-color: #b0b0b0;
+  margin: 20px;
+  padding-left: 20px;
+  min-width: 300px;
+  width: 20%;
+  border-radius: 10px 12px 12px 10px;
+}
+
+.inProgressContainer{
+  background-color: #6cbbf7;
+  margin: 20px;
+  padding-left: 20px;
+  min-width: 300px;
+  width: 20%;
+  border-radius: 10px 12px 12px 10px;
+}
+
+.finishedContainer{
+  background-color: #73c455;
   margin: 20px;
   padding-left: 20px;
   min-width: 300px;
