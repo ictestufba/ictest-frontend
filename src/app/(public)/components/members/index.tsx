@@ -24,7 +24,6 @@ export function Members(props: MembersProps) {
     email,
     handleEmailChange,
   } = props;
-  console.log("options", usersOptions)
   const { mutate: globalMutate } = useSWRConfig();
   const [openCreate, setOpenCreate] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
