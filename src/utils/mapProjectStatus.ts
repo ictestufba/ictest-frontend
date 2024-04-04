@@ -1,6 +1,6 @@
 import { TestCase } from "@/types/models";
 
-export type ProjectStatus = "Criado" | "Em Progresso" | "Finalizado";
+export type ProjectStatus = "Criado" | "Em Progresso" | "Erro" | "Finalizado";
 
 export function mapProjectStatus(cases: TestCase[]):ProjectStatus {
   const statusList = cases?.map(testCase=>testCase.status) ?? [];
@@ -11,6 +11,9 @@ export function mapProjectStatus(cases: TestCase[]):ProjectStatus {
   for (const status of statusList) {
     if (status === "open") openCount++;
     if (status === "success") successCount++;
+    if (status === "error") {
+      return "Erro";
+    };
   }
 
   if (openCount === cases.length) {

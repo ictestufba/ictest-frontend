@@ -9,9 +9,10 @@ type props = {
   newBtn?: boolean
   onClick?: () => void;
   projectId?: string;
+  buttonText?: string;
 };
 
-export function CustomTitle({ text, divider, newBtn, onClick, projectId }:props) {
+export function CustomTitle({ text, divider, newBtn, onClick, projectId, buttonText }:props) {
   const { data: users, currentUserId } = useMembers(projectId ?? null)
 
   return (
@@ -20,7 +21,7 @@ export function CustomTitle({ text, divider, newBtn, onClick, projectId }:props)
           <h1 className={styles.title}>{text}</h1>
           {
             newBtn ? (
-              <Button onClick={onClick} disabled={users?.some(user=>user.user_id === currentUserId)} className={styles.buttonContainer} type="primary" shape="round" icon={<PlusCircleOutlined />}>Criar</Button>
+              <Button onClick={onClick} disabled={users?.some(user=>user.user_id === currentUserId)} className={styles.buttonContainer} type="primary" shape="round" icon={<PlusCircleOutlined />}>{buttonText ?? 'Criar'}</Button>
             ): <></>
           }
         </div>

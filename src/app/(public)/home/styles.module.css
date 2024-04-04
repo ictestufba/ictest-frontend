@@ -12,11 +12,16 @@
   display: flex;
   justify-content: flex-start;
   flex-flow: row wrap;
-  padding: 10px 0 0 40px;
+  padding: 0 0 0 40px;
 }
 
 .searchContainer{
+  padding-top: 10px;
   padding-bottom: 10px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .bottomContainer{
@@ -40,6 +45,18 @@
   min-width: 300px;
 }
 
+.buttonContainer{
+  margin-right: 50px;
+  background-color: #004d94;
+}
+
+.myProjectsSearchContainer{
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 50px 0 50px;
+}
 
 @media (max-width: 870px) {
   .cardContainer{

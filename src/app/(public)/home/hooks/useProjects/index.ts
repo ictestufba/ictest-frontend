@@ -11,8 +11,8 @@ type GetProjectsResponse = {
   projects: Project[];
 }
 
-export function useProjects(isValidFlow:boolean) {
-  const { data: dataProjects, isLoading: isProjectsLoading, mutate } = useSwr(isValidFlow && `/projects`, async () => {
+export function useProjects() {
+  const { data: dataProjects, isLoading: isProjectsLoading, mutate } = useSwr(`/projects`, async () => {
     const response = await api.get<GetProjectsResponse>("/projects");
 
     const filledProjects = response.data.projects.map(project=>{

@@ -1,7 +1,7 @@
 "use client";
 
 import { Spin, Tabs } from "antd";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Board } from "../../../components/board";
 import { CustomTitle } from "../../../components/title";
 import { useProject } from "./hooks/useProject";
@@ -12,6 +12,8 @@ import { Members } from "@/app/(public)/components/members";
 import { CreateCaseModal } from "@/app/(public)/components/modal/case/create";
 import { EditCaseModal } from "@/app/(public)/components/modal/case/edit";
 import { TestCase } from "@/types/models";
+import { useRouter } from "next/navigation";
+import { NavbarCtx } from "../../template";
 import { useUsers } from "./hooks/useUsers";
 
 export default function Case({
@@ -19,6 +21,9 @@ export default function Case({
 }: {
   params: { id: string };
 }) {
+  const router = useRouter();
+  let { setSelectedOption } = useContext(NavbarCtx);
+  setSelectedOption("")
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"test-cases" | "users">();
   const [openCreate, setOpenCreate] = useState(false);
@@ -47,7 +52,7 @@ export default function Case({
         return indexA - indexB;
       });
   }
-
+  
   const {data:users, mutate:mutateUsers} = useUsers(email, project?.members?.map(member=>member.user_id) ?? [])
 
   const handleEmailChange = (newValue: string) => {
@@ -104,7 +109,7 @@ export default function Case({
           </div>
         ): (
           <>
-            <CustomTitle text={project?.name!} divider newBtn onClick={showCreateDrawer} projectId={params.id}/>
+            <CustomTitle text={project?.name!} divider newBtn onClick={showCreateDrawer} projectId={params.id} buttonText="Criar Caso de Teste"/>
             <Tabs
               className={styles.tabsContainer}
               defaultActiveKey={"test-cases"}

@@ -46,7 +46,7 @@
 }
 
 .failTestCard {
-  background-color: rgba(245, 34, 45, 0.2);
+  background-color: #f5222d33;
   cursor: pointer;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .onProgressTestCard {
-  background-color: rgba(255, 176, 24, 0.2);
+  background-color: #ffb01833;
   cursor: pointer;
 }
 
@@ -64,11 +64,11 @@
 }
 
 .openTestCard {
-  background-color: rgba(201, 201, 201, 0.2);
+  background-color: #bbdff8;
 }
 
 .openTestCard .status {
-  background: #c9c9c9;
+  background: #67bcf9;
 }
 
 .testContent {

@@ -22,12 +22,15 @@ export function ModelCard({id, title, description, bottomText, onClick, status}:
         return styles.inProgressContainer;
       case "Finalizado":
         return styles.finishedContainer;
+      case "Erro":
+        return styles.errorContainer;
       default:
         return styles.createdContainer;
     }
   }
   return (
     <div className={getStyleByStatus()}>
+      <div className={styles.labelContainer}>{status?.toUpperCase()}</div>
       <Card 
         id={id}
         className={styles.card}

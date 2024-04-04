@@ -1,5 +1,5 @@
 import { removeToken } from "@/lib/auth";
-import { LogoutOutlined, MenuOutlined, ProjectOutlined, UserOutlined } from "@ant-design/icons";
+import { LogoutOutlined, MenuOutlined, ProjectOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Avatar, Button, Drawer, Layout } from "antd";
 import { usePathname, useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ import { RightMenu } from "./RightMenu";
 
 import styles from "./styles.module.css";
 
-export type NavbarOption = "teams" | "projects";
+export type NavbarOption = "" | "my-projects" | "projects";
 
 type props = {
   selectedOption: NavbarOption;
@@ -48,19 +48,31 @@ export function Navbar({ selectedOption, onClick, setIsPageLoading }:props) {
 
   const menuItems: { left: MenuProps['items'], right: MenuProps['items'] } = {
     left: [
-      // {
-      //   label: 'Times',
-      //   key: 'teams',
-      //   icon: <TeamOutlined />,
-      //   className: styles.menuItem,
-      //   onClick: () => {},
-      // },
+      {
+        label: 'Meus Projetos',
+        key: 'my-projects',
+        icon: <TeamOutlined />,
+        className: styles.menuItem,
+        onClick: () => {
+          if (pathname.includes("/home/projects")){
+            setIsPageLoading(true);
+          }
+          router.push("/home");
+        },
+      },
       {
         label: 'Projetos',
         key: 'projects',
         icon: <ProjectOutlined />,
         className: styles.menuItem,
-        onClick: () => {},
+        onClick: () => {
+          let query = "";
+          if (pathname.includes("/home/projects")){
+            setIsPageLoading(true);
+            query = "default=false";
+          }
+          router.push(`/home?${query}`);
+        },
       },
     ],
     right: [

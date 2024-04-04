@@ -28,11 +28,12 @@ export function CaseCard({testCase, onClick}: CaseCardProps) {
   );
 
   const statusStyle = useMemo(() => {
-    if (testCase.priority === "high") return styles.failTestCard;
-    if (testCase.priority === "medium") return styles.onProgressTestCard;
+    if (testCase.status === "error") return styles.failTestCard;
+    if (testCase.status === "in_progress") return styles.onProgressTestCard;
+    if (testCase.status === "success") return styles.successTestCard;
 
     return styles.openTestCard;
-  }, [testCase.priority]);
+  }, [testCase.status]);
 
   return (
     <div className={styles.container}>

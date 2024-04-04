@@ -1,33 +1,56 @@
 .createdContainer{
-  background-color: #b0b0b0;
+  background-color: #67bcf9;
   margin: 20px;
-  padding-left: 20px;
-  min-width: 300px;
-  width: 20%;
+  min-width: 330px;
+  width: 22%;
   border-radius: 10px 12px 12px 10px;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .inProgressContainer{
-  background-color: #6cbbf7;
+  background-color: #ffb018;
   margin: 20px;
-  padding-left: 20px;
-  min-width: 300px;
-  width: 20%;
+  min-width: 330px;
+  width: 22%;
   border-radius: 10px 12px 12px 10px;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.errorContainer{
+  background-color: #ff4d4f;
+  margin: 20px;
+  min-width: 330px;
+  width: 22%;
+  border-radius: 10px 12px 12px 10px;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .finishedContainer{
-  background-color: #73c455;
+  background-color: #52c41a;
   margin: 20px;
-  padding-left: 20px;
-  min-width: 300px;
-  width: 20%;
+  min-width: 330px;
+  width: 22%;
   border-radius: 10px 12px 12px 10px;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .card{
   border-radius: 0 10px 10px 0;
+  display: flex;
+  flex-grow: 1;
 }
 
-
+.labelContainer{
+  writing-mode: tb-rl;
+  transform: rotate(-180deg);
+  display: flex;
+  justify-content: center;
+  padding: 0 10px 0 10px;
+  border-radius: 0 10px 10px 0;
+  color: #1d2023;
+}
 

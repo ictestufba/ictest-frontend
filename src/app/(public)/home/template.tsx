@@ -5,11 +5,12 @@ import type { MenuProps } from "antd";
 import {
   Layout, Spin
 } from "antd";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { createContext, useEffect, useState } from "react";
 import { Navbar, NavbarOption } from "../components/navbar";
 import { defaultNavbarOption } from "./constants";
 import styles from "./styles.module.css";
+
 
 export const NavbarCtx = createContext<{ 
   selectedOption: NavbarOption,
@@ -23,13 +24,14 @@ export default function HomeTemplate({
   children,
 }: React.PropsWithChildren) {
   const router = useRouter();
+  const params = useSearchParams();
   const [isPageLoading, setIsPageLoading] = useState(false);
-
-  const [selectedOption, setSelectedOption] = useState<NavbarOption>(defaultNavbarOption);
   const onClick: MenuProps['onClick'] = (e) => {
     setSelectedOption(e.key as NavbarOption);
   };
-  
+  const [selectedOption, setSelectedOption] = useState<NavbarOption>(params.get("default") === "false" ? "projects" : defaultNavbarOption);
+
+  console.log(selectedOption)
   useEffect(() => {
     const loggedIn = isLoggedIn()
 

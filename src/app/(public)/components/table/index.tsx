@@ -1,6 +1,5 @@
 import type { TableProps } from 'antd';
 import { Table, Tag } from 'antd';
-import { NavbarOption } from '../navbar';
 import styles from "./styles.module.css";
 
 
@@ -51,9 +50,11 @@ function getProjectColumnsType():TableProps<ProjectDataType>['columns']{
       case "FINALIZADO":
         return "success";
       case "EM PROGRESSO":
-        return "processing";
+        return "yellow";
+      case "ERRO":
+        return "error"
       default:
-        return "default";
+        return "processing";
     }
   }
   return [
@@ -89,33 +90,14 @@ function getProjectColumnsType():TableProps<ProjectDataType>['columns']{
   ]
 }
 
-
 type props = {
-  columnType: NavbarOption;
   data: TeamDataType[] | ProjectDataType[];
   pagination: TableProps<any>["pagination"];
   onChange: TableProps<any>["onChange"];
   onRowClick: (id:string)=>void;
 }
 
-export function TableList({columnType, data, pagination, onChange, onRowClick}:props) {
-  if (columnType === "teams") {
-    return (
-      <Table 
-        columns={getTeamColumnsType()} 
-        dataSource={data as TeamDataType[]} 
-        pagination={pagination}
-        onChange={onChange}
-        rowClassName={styles.row}
-        onRow={(record) => {
-          return {
-            onClick: () => onRowClick(record.key),
-          };
-        }}
-      />
-    );
-  }
-
+export function TableList({data, pagination, onChange, onRowClick}:props) {
   return (
     <Table 
       columns={getProjectColumnsType()} 

@@ -1,1 +1,1 @@
-export const defaultNavbarOption = "projects";
+export const defaultNavbarOption = "my-projects";
