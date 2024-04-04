@@ -11,6 +11,7 @@
 .innerContainer{
   background-color: #f1f1f1;
   min-width: 300px;
+  width: 20%;
   display: flex;
   flex-flow: column nowrap;
   flex-grow: 1;

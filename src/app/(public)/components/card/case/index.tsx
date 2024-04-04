@@ -47,9 +47,11 @@ export function CaseCard({testCase, onClick}: CaseCardProps) {
             <span className={styles.status}></span>
             <p>{renderStatusLabel(testCase.status)}</p>
           </div>
+
           <Meta
-            title={testCase.title}
-            description={testCase.description} 
+            className={styles.infoContainer}
+            title= {<span className={styles.titleContainer}>{testCase.title}</span>}
+            description={<span className={styles.descriptionContainer}>{testCase.description}</span>} 
           />
           <Divider />
           <div className={styles.tagsContainer}>

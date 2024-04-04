@@ -84,3 +84,9 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.optionDescription{
+  color: #a0a0a0;
+  font-weight: 100;
+  white-space: wrap !important;
+}

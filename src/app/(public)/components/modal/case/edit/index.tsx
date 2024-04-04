@@ -158,16 +158,36 @@ export function EditCaseModal(props: EditCaseModalProps) {
           initialValue={testCase.type}
         >
           <Select placeholder="Selecione o tipo de teste">
-            <Option value="functional">Funcional</Option>
-            <Option value="smoke">Smoke</Option>
-            <Option value="regression">Regressão</Option>
-            <Option value="security">Segurança</Option>
-            <Option value="usability">Usabilidade</Option>
-            <Option value="performance">Performace</Option>
-            <Option value="acceptance">Aceitação</Option>
-            <Option value="compatibility">Compabilidade</Option>
-            <Option value="integration">Integração</Option>
-            <Option value="exploratory">Exploratório</Option>
+          <Option value="functional">Funcional
+              <div className={styles.optionDescription}>Avalia se o software cumpre as especificações funcionais. Testa as funções do sistema, módulo por módulo, para garantir que atende aos requisitos do usuário.</div>
+            </Option>
+            <Option value="smoke">Smoke
+              <div className={styles.optionDescription}>Também conhecido como teste de sanity, verifica se o build do software é estável o suficiente para ser submetido a testes mais detalhados. Executa testes básicos para identificar problemas críticos.</div>
+            </Option>
+            <Option value="regression">Regressão
+              <div className={styles.optionDescription}>Testa se as alterações no código não afetaram negativamente as funcionalidades existentes. Garante que novas implementações não quebraram recursos já existentes.</div>
+            </Option>
+            <Option value="security">Segurança
+              <div className={styles.optionDescription}>Avalia a segurança do sistema contra ameaças internas e externas. Identifica e corrige possíveis vulnerabilidades que possam ser exploradas por invasores.</div>
+            </Option>
+            <Option value="usability">Usabilidade
+              <div className={styles.optionDescription}>Avalia a segurança do sistema contra ameaças internas e externas. Identifica e corrige possíveis vulnerabilidades que possam ser exploradas por invasores.</div>
+            </Option>
+            <Option value="performance">Performace
+              <div className={styles.optionDescription}>Analisa o desempenho do sistema em diferentes condições de carga e utilização. Verifica se o software atende aos requisitos de tempo de resposta e capacidade de processamento.</div>
+            </Option>
+            <Option value="acceptance">Aceitação
+              <div className={styles.optionDescription}>Realizado pelo cliente ou usuário final para validar se o software atende aos requisitos e expectativas. Confirma se o produto está pronto para ser implantado.</div>
+            </Option>
+            <Option value="compatibility">Compatibilidade
+              <div className={styles.optionDescription}>Verifica se o software funciona corretamente em diferentes ambientes, sistemas operacionais, navegadores e dispositivos. Garante uma experiência consistente para todos os usuários.</div>
+            </Option>
+            <Option value="integration">Integração
+              <div className={styles.optionDescription}>Testa a integração entre diferentes componentes ou módulos do sistema. Garante que as partes individuais funcionem corretamente juntas como um todo.</div>
+            </Option>
+            <Option value="exploratory">Exploratório
+              <div className={styles.optionDescription}>Teste não estruturado, baseado na experiência e intuição do testador. Explora o software de forma livre para identificar falhas e comportamentos inesperados.</div>
+            </Option>
           </Select>
         </Form.Item>
 
