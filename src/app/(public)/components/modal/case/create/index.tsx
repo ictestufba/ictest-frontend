@@ -212,7 +212,18 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
           rules={[{ required: false, message: "Anexos" }]}
         >
           <Dragger
-            customRequest={async ({ file }) => {
+            onChange={(info) => {
+              const { status } = info.file;
+              if (status !== 'uploading') {
+                console.log(info.file, info.fileList);
+              }
+              if (status === 'done') {
+                message.success(`${info.file.name} carregado com sucesso.`);
+              } else if (status === 'error') {
+                message.error(`${info.file.name} falhou durante o carregamento.`);
+              }
+            }}
+            customRequest={async ({ file, onSuccess, onError }) => {
               try {
                 const formData = new FormData();
                 formData.append("file", file);
@@ -226,18 +237,30 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
 
                 const url = res.data.secure_url;
                 setImage(url);
+                if (onSuccess) {
+                  onSuccess({});
+                }
                 return await fetch(url).then((res) => res.blob());
               } catch (err) {
+                if (onError) {
+                  onError({
+                    cause: err,
+                    status: 500,
+                    name: "uploading error",
+                    message:""
+                  });
+                }
                 console.error(err);
               }
             }}
+            
             maxCount={1}
           >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
             <p className="ant-upload-text">
-              Se houver algum anexo ao caso clique ou arraste o arquivo para
+              Se houver algum anexo clique ou arraste o arquivo para
               esta área
             </p>
             <p className="ant-upload-hint">

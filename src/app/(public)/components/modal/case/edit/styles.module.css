@@ -90,3 +90,11 @@
   font-weight: 100;
   white-space: wrap !important;
 }
+
+.downloadAttachment{
+  margin: 10px 0 10px 0;
+}
+
+.attachmentText{
+  font-size: 16px;
+}

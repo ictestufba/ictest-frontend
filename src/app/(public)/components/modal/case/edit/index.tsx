@@ -3,7 +3,7 @@ import { api } from "@/lib/api";
 import { TestCase } from "@/types/models";
 import { renderPriorityLabel } from "@/utils/renderPriorityLabel";
 import {
-  DeleteFilled
+  DeleteFilled, DownloadOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -13,7 +13,8 @@ import {
   Modal,
   Radio,
   Select,
-  Tag
+  Tag,
+  message,
 } from "antd";
 import { format } from "date-fns";
 import dayjs from "dayjs";
@@ -33,8 +34,10 @@ type EditCaseModalProps = {
 };
 
 export function EditCaseModal(props: EditCaseModalProps) {
-  const { testCase, open, onOk, onCancel, onError, setIsLoading } = props;
+  const [messageApi, contextHolder] = message.useMessage();
 
+  const { testCase, open, onOk, onCancel, onError, setIsLoading } = props;
+  console.log(testCase);
   const { data: users } = useMembers(testCase.project_id);
 
   const date = new Date(testCase.created_at);
@@ -80,6 +83,31 @@ export function EditCaseModal(props: EditCaseModalProps) {
     onOk?.();
   }
 
+  function downloadAttachment(url:string, name:string){
+    if (!url) {
+      messageApi.error("Não conseguimos realizar o download. Tente Novamente!")
+      throw new Error("Resource URL not provided! You need to provide one");
+    }
+    setIsLoading(true);
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        setIsLoading(false);
+        const blobURL = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = blobURL;
+
+        if (name && name.length) a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        messageApi.success("Download realizado com sucesso!")
+      })
+      .catch(() =>{
+        setIsLoading(false);
+        messageApi.error("Não conseguimos realizar o download. Tente Novamente!")
+      });
+  }
+
   const assignedTo = users?.find((user) => user.id === testCase.assigned_to);
   const assignedEmail = assignedTo?.email;
 
@@ -96,6 +124,8 @@ export function EditCaseModal(props: EditCaseModalProps) {
       width={1000}
       className={styles.modal}
     >
+      {contextHolder}
+
       <div className={styles.testContent}>
         <div className={styles.statusContainer}>
           <Button danger onClick={handleTestCaseDelete}>
@@ -103,31 +133,18 @@ export function EditCaseModal(props: EditCaseModalProps) {
           </Button>
         </div>
 
-        <h3>{testCase.title}</h3>
         <div className={styles.footerCard}>
-          {/* <p className={styles.secondaryText}>Criado por Fred Durão</p> */}
+          <h3>{testCase.title}</h3>
           <div className={styles.assignContainer}>
             <p className={styles.secondaryText}>Criado {formattedDate}</p>
-            {/* <div className={styles.assignContainer}>
-              <p className={styles.secondaryText}>Atribuído a </p>
-              <Avatar size="small" icon={<UserOutlined />} />
-            </div> */}
+
           </div>
         </div>
         <div className={styles.tagsContainer}>
-          {/* <Tag color="default">SPRINT 1</Tag> */}
           <Tag color="#FF5500">{renderTypeLabel()}</Tag>
           <Tag color="#FF5500">{renderPriorityLabel(testCase.priority)}</Tag>
-          {/* <Tag icon={<ClockCircleOutlined />} color="success">
-            24 ABR
-          </Tag> */}
         </div>
         
-        {testCase.attachment && (
-          <div className={styles.footerCard}>
-            <img src={testCase.attachment} alt="" width={200} />
-          </div>
-        )}
       </div>
       <Form onFinish={handleTestCaseEdit} form={form} layout="vertical">
         <Form.Item
@@ -247,6 +264,15 @@ export function EditCaseModal(props: EditCaseModalProps) {
           </Radio.Group>
         </Form.Item>
       </Form>
+      {testCase.attachment && (
+        <>
+          <p className={styles.attachmentText}>
+          Clique aqui para fazer o download da imagem anexada no momento da criação do caso de teste:
+          </p>
+          <Button onClick={()=>downloadAttachment(testCase.attachment ?? "", "caso-teste-anexo")} className={styles.downloadAttachment} type="primary" shape="round" icon={<DownloadOutlined />}>Download</Button>
+        </>
+      )}
+     
     </Modal>
   );
 }
