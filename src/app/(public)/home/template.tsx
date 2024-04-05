@@ -31,11 +31,11 @@ export default function HomeTemplate({
   };
   const [selectedOption, setSelectedOption] = useState<NavbarOption>(params.get("default") === "false" ? "projects" : defaultNavbarOption);
 
-  console.log(selectedOption)
   useEffect(() => {
     const loggedIn = isLoggedIn()
 
     if (!loggedIn){
+      setIsPageLoading(true);
       router.push("/login");
     }
   }, [router]);

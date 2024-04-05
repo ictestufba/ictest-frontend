@@ -8,12 +8,13 @@ import { useProject } from "./hooks/useProject";
 import { useTestCases } from "./hooks/useTestCases";
 import styles from "./styles.module.css";
 
+import { GraphSection } from "@/app/(public)/components/graph";
 import { Members } from "@/app/(public)/components/members";
 import { CreateCaseModal } from "@/app/(public)/components/modal/case/create";
 import { EditCaseModal } from "@/app/(public)/components/modal/case/edit";
 import { TestCase } from "@/types/models";
-import { useRouter } from "next/navigation";
 import { NavbarCtx } from "../../template";
+import { useMembers } from "./hooks/useMembers";
 import { useUsers } from "./hooks/useUsers";
 
 export default function Case({
@@ -21,7 +22,6 @@ export default function Case({
 }: {
   params: { id: string };
 }) {
-  const router = useRouter();
   let { setSelectedOption } = useContext(NavbarCtx);
   setSelectedOption("")
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -31,9 +31,14 @@ export default function Case({
   const [email, setEmail] = useState<string>("");
   const [testCaseToEdit, setTestCaseToEdit] = useState<TestCase>();
   const {project, isLoading: isProjectLoading} = useProject(params.id);
+  const {data: members, isLoading: isMembersLoading, isAdmin} = useMembers(isProjectLoading ? null : project?.id ?? null);
+  console.log(isAdmin)
   const {testCases, isLoading: isCasesLoading, mutate } = useTestCases(params.id);
-  const getCasesByStatus = (status: TestCase["status"]) => {
+  const getCasesByStatus = (status: TestCase["status"], withSort = false) => {
     const filtered = testCases?.filter(testCase => testCase?.status === status) ?? [];
+    if(!withSort){
+      return filtered;
+    }
     return filtered
       ?.sort((a, b) => b.title.localeCompare(a.title))
       ?.sort((a, b) => {
@@ -124,14 +129,25 @@ export default function Case({
                   key: "test-cases",
                   children: (
                     <Board projectId={params.id} setIsPageLoading={setIsPageLoading} onCardClick={showEditDrawer} initialCases={{
+                      "open": getCasesByStatus("open", true),
+                      "in_progress": getCasesByStatus("in_progress", true),
+                      "error": getCasesByStatus("error", true),
+                      "success": getCasesByStatus("success", true)
+                    }}/>
+                  ),
+                  label: "Board",
+                },
+                {
+                  ...(!isMembersLoading && isAdmin && {
+                    key: "data",
+                    children: <GraphSection members={members ?? []} cases={{
                       "open": getCasesByStatus("open"),
                       "in_progress": getCasesByStatus("in_progress"),
                       "error": getCasesByStatus("error"),
                       "success": getCasesByStatus("success")
-                    }}/>
-                  ),
-                  label: "Board",
-                  
+                    }}/>,
+                    label: "Dados",
+                  }) as any,
                 },
                 {
                   key: "users",

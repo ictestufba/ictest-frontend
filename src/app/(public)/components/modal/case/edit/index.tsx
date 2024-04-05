@@ -198,7 +198,7 @@ export function EditCaseModal(props: EditCaseModalProps) {
           initialValue={testCase.status}
         >
           <Radio.Group size="small" defaultValue="minor">
-            <Radio.Button value="error">Falha</Radio.Button>
+            <Radio.Button value="error">Erro</Radio.Button>
             <Radio.Button value="success">Sucesso</Radio.Button>
             <Radio.Button value="in_progress">Em Progresso</Radio.Button>
             <Radio.Button value="open">Aberto</Radio.Button>

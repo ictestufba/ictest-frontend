@@ -89,7 +89,9 @@ export default function Home() {
                     ))
                   ) : (
                     <div className={styles.emptyState}>
-                      <Image src={emptyImg.src} alt="" width={300} height={300} className={styles.image}/>
+                      <Image src={emptyImg.src} alt="" width={500} height={500} className={styles.image}/>
+                      <h1 className={styles.emptyDescription}>Sua lista está vazia no momento!</h1>
+                      <p  className={styles.emptySecondDescription}>Comece criando seu primeiro projeto para aproveitar nosso ambiente</p>
                     </div>
                   )
                 ) : (
