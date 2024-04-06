@@ -3,7 +3,8 @@ import { api } from "@/lib/api";
 import { TestCase } from "@/types/models";
 import { renderPriorityLabel } from "@/utils/renderPriorityLabel";
 import {
-  DeleteFilled, DownloadOutlined
+  DeleteFilled,
+  PaperClipOutlined, UploadOutlined
 } from "@ant-design/icons";
 import {
   Button,
@@ -14,10 +15,13 @@ import {
   Radio,
   Select,
   Tag,
+  Upload,
   message,
 } from "antd";
+import axios from "axios";
 import { format } from "date-fns";
 import dayjs from "dayjs";
+import { useState } from "react";
 import { testCaselabelByType } from "../../../../constants/caseLabels";
 import { useMembers } from "../../../../home/projects/[id]/hooks/useMembers";
 import styles from "./styles.module.css";
@@ -34,10 +38,12 @@ type EditCaseModalProps = {
 };
 
 export function EditCaseModal(props: EditCaseModalProps) {
-  const [messageApi, contextHolder] = message.useMessage();
-
   const { testCase, open, onOk, onCancel, onError, setIsLoading } = props;
-  console.log(testCase);
+
+  const [messageApi, contextHolder] = message.useMessage();
+  const [hasErrorFields, setHasErrorFields] = useState(testCase.status === "error");
+  const [errorImage, setErrorImage] = useState<string>();
+
   const { data: users } = useMembers(testCase.project_id);
 
   const date = new Date(testCase.created_at);
@@ -49,18 +55,22 @@ export function EditCaseModal(props: EditCaseModalProps) {
     const label = testCaselabelByType[testCase.type];
     return label;
   }
- 
   async function handleTestCaseEdit(payload: Partial<TestCase>) {
     // @ts-ignore
     const deadline = payload.deadline?.$d?.toISOString?.();
-
     setIsLoading(true);
     try {
+      let error_attachment = errorImage ? errorImage : testCase.error_attachment ?? null
+      if (payload.status !== "error") {
+        error_attachment = null;
+      }
       await api.patch(`/test-cases/${testCase.id}/update`, {
         data: {
           ...testCase,
           ...payload,
           deadline,
+          error_description: payload.error_description ?? "",
+          error_attachment,
         },
       });
 
@@ -73,14 +83,20 @@ export function EditCaseModal(props: EditCaseModalProps) {
       onOk?.();
       setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
+
       console.error(error);
       onError?.(error);
     }
   }
 
   async function handleTestCaseDelete() {
+    setIsLoading(true);
     await api.delete(`/test-cases/${testCase.id}`);
+    setIsLoading(false);
+
     onOk?.();
+
   }
 
   function downloadAttachment(url:string, name:string){
@@ -106,6 +122,16 @@ export function EditCaseModal(props: EditCaseModalProps) {
         setIsLoading(false);
         messageApi.error("Não conseguimos realizar o download. Tente Novamente!")
       });
+  }
+
+  function handleErrorAttachment(value: TestCase["status"]){
+    if (value === "error"){
+      setHasErrorFields(true);
+
+      return;
+    }
+
+    setHasErrorFields(false);
   }
 
   const assignedTo = users?.find((user) => user.id === testCase.assigned_to);
@@ -135,10 +161,14 @@ export function EditCaseModal(props: EditCaseModalProps) {
 
         <div className={styles.footerCard}>
           <h3>{testCase.title}</h3>
+          
           <div className={styles.assignContainer}>
             <p className={styles.secondaryText}>Criado {formattedDate}</p>
 
           </div>
+          {testCase.attachment && (
+            <Button className={styles.attachmentBtn} type="primary" ghost onClick={()=>downloadAttachment(testCase.attachment ?? "", "caso-teste")} icon={<PaperClipOutlined size={60} className={styles.downloadAttachment} />}>Download: Imagem do caso de teste</Button>
+          )}
         </div>
         <div className={styles.tagsContainer}>
           <Tag color="#FF5500">{renderTypeLabel()}</Tag>
@@ -214,13 +244,97 @@ export function EditCaseModal(props: EditCaseModalProps) {
           rules={[{ required: false, message: "Selecione o status do teste" }]}
           initialValue={testCase.status}
         >
-          <Radio.Group size="small" defaultValue="minor">
+          <Radio.Group size="small" defaultValue="minor" onChange={(e)=>{
+            handleErrorAttachment(e.target.value)
+          }}>
             <Radio.Button value="error">Erro</Radio.Button>
             <Radio.Button value="success">Sucesso</Radio.Button>
             <Radio.Button value="in_progress">Em Progresso</Radio.Button>
             <Radio.Button value="open">Aberto</Radio.Button>
           </Radio.Group>
         </Form.Item>
+        {
+          hasErrorFields && (
+            <>
+              <Form.Item
+                name="files"
+                rules={[{ required: false, message: "Anexos" }]}
+                className={styles.uploadContainer}
+              >
+                <Upload
+                  onRemove={() => setErrorImage("")}
+                  onChange={(info) => {
+                    const { status } = info.file;
+                    if (status !== 'uploading') {
+                      console.log(info.file, info.fileList);
+                    }
+                    if (status === 'done') {
+                      message.success(`${info.file.name} carregado com sucesso.`);
+                    } else if (status === 'error') {
+                      message.error(`${info.file.name} falhou durante o carregamento.`);
+                    }
+                  }}
+                  customRequest={async ({ file, onSuccess, onError }) => {
+                    try {
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      formData.append("upload_preset", "smskd6ty");
+                      formData.append("api_key", "249422772221523");
+      
+                      const res = await axios.post(
+                        `https://api.cloudinary.com/v1_1/dwvbu2eak/image/upload`,
+                        formData
+                      );
+      
+                      const url = res.data.secure_url;
+                      setErrorImage(url);
+                      if (onSuccess) {
+                        onSuccess({});
+                      }
+                      return await fetch(url).then((res) => res.blob());
+                    } catch (err) {
+                      if (onError) {
+                        onError({
+                          cause: err,
+                          status: 500,
+                          name: "uploading error",
+                          message:""
+                        });
+                      }
+                      console.error(err);
+                    }
+                  }}
+                  
+                  maxCount={1}
+                >
+                  <Button icon={<UploadOutlined />}>{testCase.error_attachment ? "Substituir Imagem" : "Upload Imagem"} </Button>
+                </Upload>
+               
+              </Form.Item>
+              {
+                testCase.error_attachment && (
+                  <Button className={styles.attachmentBtn} type="primary" ghost onClick={()=>downloadAttachment(testCase.error_attachment ?? "", "caso-teste-erro")} icon={<PaperClipOutlined size={60} className={styles.downloadAttachment} />}>Download: Imagem do erro</Button>
+                )
+              }
+              <Form.Item
+                name="error_description"
+                label="Descrição do erro"
+                rules={[
+                  {
+                    required: false,
+                    message: "Digite a descrição do erro que ocorreu no caso de teste",
+                  },
+                ]}
+                initialValue={testCase.error_description}
+              >
+                <Input.TextArea
+                  rows={4}
+                  placeholder="Digite a descrição do erro que ocorreu no caso de teste"
+                />
+              </Form.Item>
+            </>
+          )
+        }
         <Form.Item
           name="assigned_to"
           label="Responsável"
@@ -264,15 +378,7 @@ export function EditCaseModal(props: EditCaseModalProps) {
           </Radio.Group>
         </Form.Item>
       </Form>
-      {testCase.attachment && (
-        <>
-          <p className={styles.attachmentText}>
-          Clique aqui para fazer o download da imagem anexada no momento da criação do caso de teste:
-          </p>
-          <Button onClick={()=>downloadAttachment(testCase.attachment ?? "", "caso-teste-anexo")} className={styles.downloadAttachment} type="primary" shape="round" icon={<DownloadOutlined />}>Download</Button>
-        </>
-      )}
-     
+
     </Modal>
   );
 }

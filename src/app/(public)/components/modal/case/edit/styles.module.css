@@ -3,6 +3,7 @@
   background: white;
 }
 
+
 .modal p {
   margin: 0;
 }
@@ -74,6 +75,7 @@
 .assignContainer {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .secondaryText {
@@ -92,9 +94,23 @@
 }
 
 .downloadAttachment{
-  margin: 10px 0 10px 0;
+  margin: 5px 5px 10px 0;;
 }
 
 .attachmentText{
   font-size: 16px;
+}
+
+.uploadContainer{
+  margin-top: 10px;
+}
+
+.attachmentBtn:hover{
+  background-color: #004D94 !important;
+  color:#ffffff !important;
+}
+
+.attachmentBtn{
+  width: 100%;
+  margin-bottom: 5px;
 }

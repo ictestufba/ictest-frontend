@@ -32,7 +32,6 @@ export default function Case({
   const [testCaseToEdit, setTestCaseToEdit] = useState<TestCase>();
   const {project, isLoading: isProjectLoading} = useProject(params.id);
   const {data: members, isLoading: isMembersLoading, isAdmin} = useMembers(isProjectLoading ? null : project?.id ?? null);
-  console.log(isAdmin)
   const {testCases, isLoading: isCasesLoading, mutate } = useTestCases(params.id);
   const getCasesByStatus = (status: TestCase["status"], withSort = false) => {
     const filtered = testCases?.filter(testCase => testCase?.status === status) ?? [];
