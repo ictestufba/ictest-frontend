@@ -5,7 +5,7 @@
   width: 22%;
   border-radius: 10px 12px 12px 10px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 }
 
 .inProgressContainer{
@@ -15,7 +15,7 @@
   width: 22%;
   border-radius: 10px 12px 12px 10px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 }
 
 .errorContainer{
@@ -25,7 +25,7 @@
   width: 22%;
   border-radius: 10px 12px 12px 10px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 }
 
 .finishedContainer{
@@ -35,7 +35,7 @@
   width: 22%;
   border-radius: 10px 12px 12px 10px;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 }
 
 .card{
@@ -54,3 +54,9 @@
   color: #1d2023;
 }
 
+
+.titleContainer{
+  display: inline-block;
+  word-break: break-word;
+  text-wrap: wrap;
+}

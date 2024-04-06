@@ -39,7 +39,7 @@ export function ModelCard({id, title, description, bottomText, onClick, status}:
       >
         <Meta
           avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />}
-          title={title}
+          title={<span className={styles.titleContainer}>{title}</span>}
           description={description}
         />
         <Divider />
