@@ -195,7 +195,8 @@ export function GraphSection({cases, members}: GraphSectionProps) {
                     'rgba(106, 218, 50, 1)',
                     'rgba(255, 99, 132, 1)',
                     'rgba(255, 206, 86, 1)',
-                    'rgba(54, 162, 235, 1)'
+                    'rgba(54, 162, 235, 1)',
+                    'rgb(205, 249, 224,1)'
                   ],
                   
                 },
@@ -205,10 +206,11 @@ export function GraphSection({cases, members}: GraphSectionProps) {
               plugins: {
                 datalabels: {
                   font:{
-                    size:23,
+                    size:20,
                     weight:400,
                   },
                   formatter: (value) => {
+                    if (totalCases === 0) return "Ainda não temos casos suficiente para o gráfico!";
                     const percentageValue = (value/totalCases);
                     if (percentageValue === 0){
                       return ""
