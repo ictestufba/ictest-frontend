@@ -14,9 +14,10 @@ import {
   Modal,
   Radio,
   Select,
+  Spin,
   Tag,
   Upload,
-  message,
+  message
 } from "antd";
 import axios from "axios";
 import { format } from "date-fns";
@@ -34,11 +35,11 @@ type EditCaseModalProps = {
   onOk: () => void;
   onCancel: () => void;
   open: boolean;
-  setIsLoading: (value: boolean) => void;
 };
 
 export function EditCaseModal(props: EditCaseModalProps) {
-  const { testCase, open, onOk, onCancel, onError, setIsLoading } = props;
+  const { testCase, open, onOk, onCancel, onError } = props;
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const [messageApi, contextHolder] = message.useMessage();
   const [hasErrorFields, setHasErrorFields] = useState(testCase.status === "error");
@@ -58,13 +59,12 @@ export function EditCaseModal(props: EditCaseModalProps) {
   async function handleTestCaseEdit(payload: Partial<TestCase>) {
     // @ts-ignore
     const deadline = payload.deadline?.$d?.toISOString?.();
-    setIsLoading(true);
+    setIsPageLoading(true);
     try {
       let error_attachment = errorImage ? errorImage : testCase.error_attachment ?? null
       if (payload.status !== "error") {
         error_attachment = null;
       }
-
       await api.patch(`/test-cases/${testCase.id}/update`, {
         data: {
           ...testCase,
@@ -82,11 +82,11 @@ export function EditCaseModal(props: EditCaseModalProps) {
       }
 
       onOk?.();
-      setIsLoading(false);
+      setIsPageLoading(false);
       
       message.success("Caso de teste editado com sucesso!")
     } catch (error) {
-      setIsLoading(false);
+      setIsPageLoading(false);
 
       console.error(error);
       message.error("Não conseguimos editar o caso de teste no momento. Tente novamente mais tarde!")
@@ -96,9 +96,9 @@ export function EditCaseModal(props: EditCaseModalProps) {
   }
 
   async function handleTestCaseDelete() {
-    setIsLoading(true);
+    setIsPageLoading(true);
     await api.delete(`/test-cases/${testCase.id}`);
-    setIsLoading(false);
+    setIsPageLoading(false);
 
     onOk?.();
 
@@ -109,11 +109,11 @@ export function EditCaseModal(props: EditCaseModalProps) {
       messageApi.error("Não conseguimos realizar o download. Tente Novamente!")
       throw new Error("Resource URL not provided! You need to provide one");
     }
-    setIsLoading(true);
+    setIsPageLoading(true);
     fetch(url)
       .then(response => response.blob())
       .then(blob => {
-        setIsLoading(false);
+        setIsPageLoading(false);
         const blobURL = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = blobURL;
@@ -124,7 +124,7 @@ export function EditCaseModal(props: EditCaseModalProps) {
         messageApi.success("Download realizado com sucesso!")
       })
       .catch(() =>{
-        setIsLoading(false);
+        setIsPageLoading(false);
         messageApi.error("Não conseguimos realizar o download. Tente Novamente!")
       });
   }
@@ -154,9 +154,9 @@ export function EditCaseModal(props: EditCaseModalProps) {
       //   onCancel={() => setOpenEdit(false)}
       width={1000}
       className={styles.modal}
-    >
+    > 
       {contextHolder}
-
+      <Spin spinning={isPageLoading} tip="carregando...">
       <div className={styles.testContent}>
         <div className={styles.statusContainer}>
           <Button danger onClick={handleTestCaseDelete}>
@@ -383,7 +383,7 @@ export function EditCaseModal(props: EditCaseModalProps) {
           </Radio.Group>
         </Form.Item>
       </Form>
-
+      </Spin>
     </Modal>
   );
 }

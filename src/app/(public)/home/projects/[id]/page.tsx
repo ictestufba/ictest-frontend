@@ -30,7 +30,7 @@ export default function Case({
   const [openEdit, setOpenEdit] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [testCaseToEdit, setTestCaseToEdit] = useState<TestCase>();
-  const {project, isLoading: isProjectLoading} = useProject(params.id);
+  const {project, isLoading: isProjectLoading, mutate: mutateProject} = useProject(params.id);
   const {data: members, isLoading: isMembersLoading, isAdmin} = useMembers(isProjectLoading ? null : project?.id ?? null);
   const {testCases, isLoading: isCasesLoading, mutate } = useTestCases(params.id);
   const getCasesByStatus = (status: TestCase["status"], withSort = false) => {
@@ -61,6 +61,7 @@ export default function Case({
 
   const handleEmailChange = (newValue: string) => {
     setEmail(newValue);
+    mutateProject();
     mutateUsers();
   };
   
@@ -90,7 +91,6 @@ export default function Case({
           }}
           open={openEdit}
           testCase={testCaseToEdit}
-          setIsLoading={setIsPageLoading}
         />
       )}
       { openCreate && 
@@ -102,7 +102,6 @@ export default function Case({
             }}
             onClose={onCloseCreate}
             open={openCreate}
-            setIsLoading={setIsPageLoading}
           />
         )
       }

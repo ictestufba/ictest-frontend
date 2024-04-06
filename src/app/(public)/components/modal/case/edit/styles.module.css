@@ -3,7 +3,6 @@
   background: white;
 }
 
-
 .modal p {
   margin: 0;
 }
@@ -88,7 +87,7 @@
 }
 
 .optionDescription{
-  color: #a0a0a0;
+  color: rgb(205, 249, 224);
   font-weight: 100;
   white-space: wrap !important;
 }

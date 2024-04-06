@@ -12,6 +12,7 @@ import {
   Radio,
   Select,
   Space,
+  Spin,
   Upload,
   message,
 } from "antd";
@@ -30,7 +31,6 @@ type CreateCaseModalProps = {
   onSubmit?: () => void;
   open: boolean;
   projectId: string;
-  setIsLoading: (value: boolean) => void;
 };
 
 type Payload = {
@@ -44,7 +44,9 @@ type Payload = {
 };
 
 export function CreateCaseModal(props: CreateCaseModalProps) {
-  const { onClose, open, projectId, onSubmit, onError, setIsLoading } = props;
+  const { onClose, open, projectId, onSubmit, onError } = props;
+  const [isPageLoading, setIsPageLoading] = useState(false);
+
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [image, setImage] = useState<string>();
@@ -68,7 +70,7 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
       payload.priority = payload.priority ?? "low";
       payload.severity = payload.severity ?? "minor";
 
-      setIsLoading(true);
+      setIsPageLoading(true);
       const { data:response } = await api.post<{ test_case: TestCase }>(`/test-cases`, {
         project_id: projectId,
         is_flaky: false,
@@ -88,7 +90,8 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
         response.test_case,
       ]);
       onSubmit?.();
-      setIsLoading(false);
+
+      setIsPageLoading(false);
 
       message.success("Caso de teste criado com sucesso!")
 
@@ -108,6 +111,7 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
       bodyStyle={{ paddingBottom: 80 }}
     >
       {contextHolder}
+      <Spin spinning={isPageLoading} tip="carregando...">
       <Form
         form={form}
         onFinish={handleCreateTestCase}
@@ -280,6 +284,7 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
           </Button>
         </Space>
       </Form>
+      </Spin>
     </Drawer>
   );
 }

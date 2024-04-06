@@ -26,6 +26,7 @@ export function Members(props: MembersProps) {
     handleEmailChange,
     setIsPageLoading
   } = props;
+
   const { mutate: globalMutate } = useSWRConfig();
   const [openCreate, setOpenCreate] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -58,6 +59,7 @@ export function Members(props: MembersProps) {
 
 
   async function removeMember(id: string) {
+    setIsPageLoading(true);
     await api.delete(`/projects/${projectId}/remove-member`, {
       data: {
         userId:id,
@@ -65,7 +67,9 @@ export function Members(props: MembersProps) {
     });
     mutate();
     globalMutate("/users")
+    setIsPageLoading(false);
   }
+  globalMutate(`/projects/${projectId}`)
   globalMutate("/users")
 
   if (usersIsLoading) return <Spin />;
@@ -82,6 +86,11 @@ export function Members(props: MembersProps) {
             showSearch
             className={styles.select}
             disabled={!isAdmin}
+            onDropdownVisibleChange={(dropdown)=>{
+              if(dropdown){
+                handleEmailChange("")
+              }
+            }}
           >
             {usersOptions?.map((user) => {
               return (
