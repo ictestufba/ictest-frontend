@@ -89,9 +89,13 @@ export function CreateCaseModal(props: CreateCaseModalProps) {
       ]);
       onSubmit?.();
       setIsLoading(false);
+
+      message.success("Caso de teste criado com sucesso!")
+
     } catch (error) {
       console.error(error);
       onError?.(error);
+      message.error("Não conseguimos criar o caso de teste no momento. Tente novamente mais tarde!")
     }
   }
 

@@ -64,6 +64,7 @@ export function EditCaseModal(props: EditCaseModalProps) {
       if (payload.status !== "error") {
         error_attachment = null;
       }
+
       await api.patch(`/test-cases/${testCase.id}/update`, {
         data: {
           ...testCase,
@@ -82,10 +83,14 @@ export function EditCaseModal(props: EditCaseModalProps) {
 
       onOk?.();
       setIsLoading(false);
+      
+      message.success("Caso de teste editado com sucesso!")
     } catch (error) {
       setIsLoading(false);
 
       console.error(error);
+      message.error("Não conseguimos editar o caso de teste no momento. Tente novamente mais tarde!")
+
       onError?.(error);
     }
   }
