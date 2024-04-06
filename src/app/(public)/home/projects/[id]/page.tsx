@@ -150,7 +150,7 @@ export default function Case({
                 },
                 {
                   key: "users",
-                  children: <Members projectId={params.id} usersOptions={users ?? []} handleEmailChange={handleEmailChange} email={email}/>,
+                  children: <Members setIsPageLoading={setIsPageLoading} projectId={params.id} usersOptions={users ?? []} handleEmailChange={handleEmailChange} email={email}/>,
                   label: "Membros",
                 },
               ]}

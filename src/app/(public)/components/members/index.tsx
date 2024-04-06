@@ -15,6 +15,7 @@ type MembersProps = {
   usersOptions: User[];
   email: string | null;
   handleEmailChange: (value:string)=>void;
+  setIsPageLoading: (value:boolean)=>void;
 }
 
 export function Members(props: MembersProps) {
@@ -23,6 +24,7 @@ export function Members(props: MembersProps) {
     usersOptions,
     email,
     handleEmailChange,
+    setIsPageLoading
   } = props;
   const { mutate: globalMutate } = useSWRConfig();
   const [openCreate, setOpenCreate] = useState(false);
@@ -40,6 +42,7 @@ export function Members(props: MembersProps) {
 
   const addUser = async () => {
     try {
+      setIsPageLoading(true);
       await api.patch(`/projects/${projectId}/add-member`, {
         userEmail: email,
       });
@@ -50,6 +53,7 @@ export function Members(props: MembersProps) {
       console.error(error);
       messageApi.error("Ocorreu um erro ao adicionar usuário");
     }
+    setIsPageLoading(false);
   };
 
 
