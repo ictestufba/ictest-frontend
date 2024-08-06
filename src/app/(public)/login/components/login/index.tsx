@@ -59,7 +59,7 @@ export function Login({ onSuccess, setIsLoading }: Props) {
       >
         <Form.Item
           name="email"
-          rules={[{ required: true, message: "Informe seu e-mail" }]}
+          rules={[{ required: true, type: "email", message: "Informe seu e-mail" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}

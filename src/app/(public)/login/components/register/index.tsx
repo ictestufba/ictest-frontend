@@ -62,7 +62,9 @@ export function Register({onSuccess,setIsLoading}:Props) {
         </Form.Item>
         <Form.Item
           name="email"
-          rules={[{ required: true, message: "Informe seu e-mail" }]}
+          rules={[
+            { required: true, type: "email" ,message: "Informe seu e-mail" }
+          ]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
@@ -75,7 +77,10 @@ export function Register({onSuccess,setIsLoading}:Props) {
 
         <Form.Item
           name="password"
-          rules={[{ required: true, message: "Informe sua senha" }]}
+          rules={[
+            { required: true, message: "Informe sua senha" },
+            { min: 6, message: 'A senha tem que ter pelo menos 6 caracteres.' }
+          ]}
         >
           <Input.Password
             prefix={<LockOutlined className="site-form-item-icon" />}
