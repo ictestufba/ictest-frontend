@@ -28,11 +28,16 @@ export function Register({onSuccess,setIsLoading}:Props) {
       
       form.resetFields();
       onSuccess();
-    } catch (error) {
+    } catch (error:any) {
       setIsLoading(false);
       console.error(error);
+
+      let errMessage = "Não foi possível realizar login, tente novamente mais tarde!";
+      if (error?.response?.status === 409) {
+        errMessage = "Esse email ja está cadastrado!"
+      }
       messageApi.error(
-        "Ocorreu um erro não esperado ao cadastrar sua conta, tente novamente mais tarde"
+        errMessage
       );
     }
   }

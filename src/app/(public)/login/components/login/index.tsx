@@ -35,12 +35,17 @@ export function Login({ onSuccess, setIsLoading }: Props) {
       setToken(token);
       form.resetFields();
       onSuccess();
-    } catch (error) {
+    } catch (error:any) {
       console.error(error);
       setIsLoading(false);
 
+      let errMessage = "Não foi possível realizar login, tente novamente mais tarde!";
+      if (error?.response?.status === 400) {
+        errMessage = "Email/senha incorreto, tente novamente!"
+      }
+
       messageApi.error(
-        "Não foi possível realizar login, tente novamente mais tarde!"
+        errMessage
       );
     }
   }
