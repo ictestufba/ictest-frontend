@@ -80,7 +80,7 @@ export function Navbar({ selectedOption, onClick, setIsPageLoading }:props) {
         label:(
           <>
             <Avatar icon={<UserOutlined />} />
-            <span className={styles.username}>John Doe</span>
+            <span className={styles.username}>Perfil</span>
           </>
         ),
         key: "submenu",
