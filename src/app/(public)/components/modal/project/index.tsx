@@ -103,7 +103,7 @@ export function CreateProjectModal(props: CreateProjectModalProps) {
           label="Código"
           rules={[
             { required: true, message: "Digite o código do projeto" },
-            {},
+            { max: 10, message: "O código deve ter no máximo 10 caracteres" },
           ]}
         >
           <Input placeholder="Digite o código do projeto" />
